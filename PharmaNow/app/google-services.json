@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1007649148048",
+    "firebase_url": "https://cm-2021-331518-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "cm-2021-331518",
+    "storage_bucket": "cm-2021-331518.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007649148048:android:37374a2323e097abb5dc15",
+        "android_client_info": {
+          "package_name": "cm22.ua.pharmanow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007649148048-16vvdv9q76mie9clkvop1t69nplmj9s9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0D40Hg49PUk4epOYC4vuyStomxXh1C9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007649148048-16vvdv9q76mie9clkvop1t69nplmj9s9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
