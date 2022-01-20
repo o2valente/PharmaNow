@@ -62,7 +62,11 @@ public class FirstFragment extends Fragment {
                     Toast.makeText(getActivity(), "Could not read data!", Toast.LENGTH_SHORT).show();
                 }else{
                     for(DataSnapshot dsp : task.getResult().getChildren()){
-                        System.out.println(dsp.child("key").child("value").child("productId").getValue().toString());
+                        //System.out.println(dsp.child("productName").getValue());
+                        String id = dsp.child("productId").getValue().toString();
+                        String name = dsp.child("productName").getValue().toString();
+                        String pharma = dsp.child("productPharma").getValue().toString();
+                        products.add(new Product(id,name,pharma));
                     }
 
                 }
