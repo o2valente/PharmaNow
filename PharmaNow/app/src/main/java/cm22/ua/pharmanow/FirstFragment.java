@@ -25,11 +25,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firestore.v1.Value;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FirstFragment extends Fragment {
-
-    ArrayList<Product> products = new ArrayList<>();
 
     DatabaseReference databaseProducts;
 
@@ -52,10 +51,41 @@ public class FirstFragment extends Fragment {
 
         // Lookup the recyclerview in activity layout
         RecyclerView rvProducts = (RecyclerView) rootView.findViewById(R.id.rvProducts);
+
+        List<Product> products = new ArrayList<>();
+
         // Initialize contacts
         databaseProducts = FirebaseDatabase.getInstance().getReference();
 
-        databaseProducts.child("products").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        databaseProducts.child("products").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dsp : snapshot.getChildren()) {
+                    //System.out.println(dsp.child("productName").getValue());
+                    /*String id = dsp.child("productId").getValue().toString();
+                    String name = dsp.child("productName").getValue().toString();
+                    String pharma = dsp.child("productPharma").getValue().toString();*/
+                    //products.add(new Product(id, name, pharma));
+                    products.add(dsp.getValue(Product.class));
+                }
+                // Create adapter passing in the sample user data
+                ProductAdapter adapter = new ProductAdapter(products);
+                // Attach the adapter to the recyclerview to populate items
+                rvProducts.setAdapter(adapter);
+                // Set layout manager to position the items
+                rvProducts.setLayoutManager(new LinearLayoutManager(getContext()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Could not read data!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
+        /*databaseProducts.child("products").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()){
@@ -72,16 +102,13 @@ public class FirstFragment extends Fragment {
                 }
             }
 
-        });
+        });*/
+        /*Product p = products.get(0);
+        System.out.printf("TESTE: %s-%s-%s",p.productId,p.productName,p.productPharma);*/
 
         //products.add(new Product("1", "aspirina", "Farmácia Aveiro"));
         //System.out.print(products.size() + "Produtos");
-        // Create adapter passing in the sample user data
-        ProductAdapter adapter = new ProductAdapter(products);
-        // Attach the adapter to the recyclerview to populate items
-        rvProducts.setAdapter(adapter);
-        // Set layout manager to position the items
-        rvProducts.setLayoutManager(new LinearLayoutManager(getContext()));
+
 
 
         return rootView;
