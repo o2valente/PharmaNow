@@ -141,6 +141,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_map_fragment:
                 fragmentClass = MapViewFragment.class;
                 break;
+            case R.id.nav_scanner:
+                fragmentClass = ScannerFragment.class;
+                break;
             default:
                 fragmentClass = FirstFragment.class;
         }
