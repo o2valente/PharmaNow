@@ -7,6 +7,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null){
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         // This will display an Up icon (<-), we will replace it with hamburger later
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         // Find our drawer view
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -130,10 +131,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_second_fragment:
                 fragmentClass = CreateProduct.class;
                 break;
-            case R.id.profile_fragment:
+            case R.id.nav_profile_fragment:
                 fragmentClass = ProfileActivity.class;
                 break;
-            case R.id.map_fragment:
+            case R.id.nav_map_fragment:
                 fragmentClass = MapViewFragment.class;
                 break;
             default:

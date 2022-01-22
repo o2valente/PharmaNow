@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/nav_map_fragment">
+
+    <fragment
+        android:id="@+id/nav_map_fragment"
+        android:name="cm22.ua.pharmanow.MapViewFragment"
+        android:label="MapViewFragment"
+        tools:layout="@layout/map_fragment">
+        <action
+            android:id="@+id/action_mapViewFragment_to_pharmaProductsFragment"
+            app:destination="@id/pharmaProductsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pharmaProductsFragment"
+        android:name="cm22.ua.pharmanow.PharmaProductsFragment"
+        android:label="PharmaProductsFragment"
+        tools:layout="@layout/pharma_products"/>
+    <fragment
+        android:id="@+id/nav_first_fragment"
+        android:name="cm22.ua.pharmanow.FirstFragment"
+        android:label="FirstFragment"
+        tools:layout="@layout/placeholder1"/>
+    <fragment
+        android:id="@+id/nav_profile_fragment"
+        android:name="cm22.ua.pharmanow.ProfileActivity"
+        android:label="ProfileActivity"
+        tools:layout="@layout/profile_activity"/>
+</navigation>

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<!--    <fragment-->
+<!--        android:id="@+id/mapViewFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:name="cm22.ua.pharmanow.MapViewFragment"-->
+<!--        app:navGraph="@navigation/navigation" />-->
 
     <TextView
         android:layout_width="wrap_content"

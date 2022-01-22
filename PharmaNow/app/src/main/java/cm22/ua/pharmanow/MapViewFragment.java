@@ -1,13 +1,7 @@
 package cm22.ua.pharmanow;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.Manifest;
-import android.content.DialogInterface;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,14 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
-import com.google.android.gms.common.api.GoogleApiClient;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -62,9 +58,11 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_fragment, container, false);
+        //View mainView = inflater.inflate(R.layout.activity_main, container, false);
 
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
+
         mMapView.onCreate(savedInstanceState);
 
 
@@ -138,8 +136,14 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
                             // for ActivityCompat#requestPermissions for more details.
                             return false;
                         }
-
-                        if(marker.getTitle().equals(markerList[0].getTitle())) Toast.makeText(getActivity(), "Going to Farmácia Moura", Toast.LENGTH_LONG).show();
+                        Fragment fragment = null;
+                        if(marker.getTitle().equals(markerList[0].getTitle())){
+                            Toast.makeText(getActivity(), "Going to Farmácia Moura", Toast.LENGTH_LONG).show();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("requestKey", marker.getTitle());
+                            //System.out.println(navController.getCurrentDestination());
+                            Navigation.findNavController(rootView).navigate(R.id.action_mapViewFragment_to_pharmaProductsFragment);
+                        }
                         else if(marker.getTitle().equals(markerList[1].getTitle())) Toast.makeText(getActivity(), "Going to Farmácia Aveirense", Toast.LENGTH_LONG).show();
                         else if(marker.getTitle().equals(markerList[2].getTitle())) Toast.makeText(getActivity(), "Going to Farmácia Moderna", Toast.LENGTH_LONG).show();
                         else if(marker.getTitle().equals(markerList[3].getTitle())) Toast.makeText(getActivity(), "Going to Farmácia Neto", Toast.LENGTH_LONG).show();
@@ -189,10 +193,15 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
         mMapView.onLowMemory();
     }
 
+    public void replaceFragment(Fragment someFragment) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_map_fragment, someFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
-
 }
