@@ -6,18 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    >
+    android:paddingBottom="10dp">
 
     <TextView
         android:id="@+id/item_productName"
         android:layout_width="99dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-
-    <TextView
-        android:id="@+id/item_productPharma"
-        android:layout_width="129dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
@@ -28,12 +21,10 @@
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/item_buy_button"
-        android:layout_width="56dp"
+        android:id="@+id/sc_remove_button"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="10sp"
-        tools:ignore="SpeakableTextPresentCheck"
-        tools:text="Buy" />
+        android:paddingRight="16dp" />
+
 </LinearLayout>

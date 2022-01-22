@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +33,9 @@ import java.util.List;
 public class FirstFragment extends Fragment {
 
     DatabaseReference databaseProducts;
+    //private FirebaseAuth auth;
+    private String userEmail;
+    private Button btnBuy;
 
     public FirstFragment() {
         // Required empty public constructor
@@ -52,10 +57,10 @@ public class FirstFragment extends Fragment {
         // Lookup the recyclerview in activity layout
         RecyclerView rvProducts = (RecyclerView) rootView.findViewById(R.id.rvProducts);
 
-        List<Product> products = new ArrayList<>();
-
-        // Initialize contacts
+        // Initialize products
         databaseProducts = FirebaseDatabase.getInstance().getReference();
+
+        List<Product> products = new ArrayList<>();
 
         databaseProducts.child("products").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -74,6 +79,7 @@ public class FirstFragment extends Fragment {
                 rvProducts.setAdapter(adapter);
                 // Set layout manager to position the items
                 rvProducts.setLayoutManager(new LinearLayoutManager(getContext()));
+
             }
 
             @Override

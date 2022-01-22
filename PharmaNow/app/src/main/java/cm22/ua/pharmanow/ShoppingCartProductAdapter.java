@@ -20,8 +20,9 @@ import java.util.List;
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
-public class ProductAdapter extends
-        RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+public class ShoppingCartProductAdapter extends
+        RecyclerView.Adapter<ShoppingCartProductAdapter.ViewHolder> {
+
 
     private List<Product> mProducts;
     private ArrayList<Product> cartProdcuts = new ArrayList<>();
@@ -31,7 +32,7 @@ public class ProductAdapter extends
 
 
     // Pass in the contact array into the constructor
-    public ProductAdapter(List<Product> products) {
+    public ShoppingCartProductAdapter(List<Product> products) {
         mProducts = products;
     }
 

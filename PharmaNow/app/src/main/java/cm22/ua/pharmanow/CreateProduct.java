@@ -34,6 +34,7 @@ public class CreateProduct extends Fragment {
     Spinner pharmaSpinner;
     EditText priceText;
 
+
     DatabaseReference databaseProducts;
 
     public CreateProduct() {
@@ -74,11 +75,9 @@ public class CreateProduct extends Fragment {
         String pharmacy = pharmaSpinner.getSelectedItem().toString();
         String price = priceText.getText().toString().trim();
 
-
         if(!TextUtils.isEmpty(name)){
             String id = databaseProducts.push().getKey();
             Product product = new Product(id, name, pharmacy,price);
-
             databaseProducts.child(id).setValue(product);
 
             Toast.makeText(getActivity(), "Product Added ", Toast.LENGTH_LONG).show();

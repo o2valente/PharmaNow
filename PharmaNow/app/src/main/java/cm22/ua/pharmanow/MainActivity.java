@@ -1,5 +1,6 @@
 package cm22.ua.pharmanow;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,16 +18,23 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToogle;
     private ActionBarDrawerToggle drawerToggle;
-    private NavController navController;
-    private AppBarConfiguration appBarConfiguration;
+    private ArrayList<Product> cartProdcuts = new ArrayList<>();
+    DatabaseReference databaseProducts;
 
 
     @Override
@@ -37,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null){
+        if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -69,6 +77,30 @@ public class MainActivity extends AppCompatActivity {
         // We can now look up items within the header if needed
         //ImageView ivHeaderPhoto = headerLayout.findViewById(R.id.imageView);
 
+        databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        databaseProducts.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    if (data.child(userId).exists()) {
+                        //do ur stuff
+                    } else {
+                        //do something if not exists
+                        ShoppingCart shoppingCart = new ShoppingCart(cartProdcuts, userEmail);
+                        databaseProducts.child(userId).setValue(shoppingCart);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+
+        });
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -144,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_scanner:
                 fragmentClass = ScannerFragment.class;
                 break;
+            case R.id.nav_ShoppingCart_fragment:
+                fragmentClass = ShoppingCartFragment.class;
             default:
                 fragmentClass = FirstFragment.class;
         }
