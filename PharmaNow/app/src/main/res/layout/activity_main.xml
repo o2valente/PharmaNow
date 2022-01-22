@@ -6,7 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
+<!--    <fragment-->
+<!--        android:id="@+id/myNavHostFragment"-->
+<!--        android:name="androidx.navigation.fragment.NavHostFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:navGraph="@navigation/navigation"-->
+<!--        app:defaultNavHost="true" />-->
 
     <!-- This LinearLayout represents the contents of the screen  -->
     <LinearLayout
@@ -28,13 +34,7 @@
             android:layout_height="match_parent">
             <!-- The NavHostFragment within the activity_main layout -->
 
-            <fragment
-            android:id="@+id/myNavHostFragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:navGraph="@navigation/navigation"
-            app:defaultNavHost="true" />
+
 
 
         </FrameLayout>
@@ -51,5 +51,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@android:color/white"
-        app:menu="@layout/drawer_view" />
+        app:menu="@menu/drawer_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

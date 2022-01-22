@@ -136,17 +136,51 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
                             // for ActivityCompat#requestPermissions for more details.
                             return false;
                         }
-                        Fragment fragment = null;
                         if(marker.getTitle().equals(markerList[0].getTitle())){
                             Toast.makeText(getActivity(), "Going to Farmácia Moura", Toast.LENGTH_LONG).show();
                             Bundle bundle = new Bundle();
                             bundle.putString("requestKey", marker.getTitle());
-                            //System.out.println(navController.getCurrentDestination());
-                            Navigation.findNavController(rootView).navigate(R.id.action_mapViewFragment_to_pharmaProductsFragment);
+                            Fragment newFragment = new PharmaProductsFragment();
+                            newFragment.setArguments(bundle);
+                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                            transaction.replace(R.id.flContent, newFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+
                         }
-                        else if(marker.getTitle().equals(markerList[1].getTitle())) Toast.makeText(getActivity(), "Going to Farmácia Aveirense", Toast.LENGTH_LONG).show();
-                        else if(marker.getTitle().equals(markerList[2].getTitle())) Toast.makeText(getActivity(), "Going to Farmácia Moderna", Toast.LENGTH_LONG).show();
-                        else if(marker.getTitle().equals(markerList[3].getTitle())) Toast.makeText(getActivity(), "Going to Farmácia Neto", Toast.LENGTH_LONG).show();
+                        else if(marker.getTitle().equals(markerList[1].getTitle())){
+                            Toast.makeText(getActivity(), "Going to Farmácia Aveirense", Toast.LENGTH_LONG).show();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("requestKey", marker.getTitle());
+                            Fragment newFragment = new PharmaProductsFragment();
+                            newFragment.setArguments(bundle);
+                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                            transaction.replace(R.id.flContent, newFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
+                        else if(marker.getTitle().equals(markerList[2].getTitle())){
+                            Toast.makeText(getActivity(), "Going to Farmácia Moderna", Toast.LENGTH_LONG).show();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("requestKey", marker.getTitle());
+                            Fragment newFragment = new PharmaProductsFragment();
+                            newFragment.setArguments(bundle);
+                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                            transaction.replace(R.id.flContent, newFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
+                        else if(marker.getTitle().equals(markerList[3].getTitle())){
+                            Toast.makeText(getActivity(), "Going to Farmácia Neto", Toast.LENGTH_LONG).show();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("requestKey", marker.getTitle());
+                            Fragment newFragment = new PharmaProductsFragment();
+                            newFragment.setArguments(bundle);
+                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                            transaction.replace(R.id.flContent, newFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
 
                         // Return false to indicate that we have not consumed the event and that we wish
                         // for the default behavior to occur (which is for the camera to move such that the
@@ -191,13 +225,6 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
-    }
-
-    public void replaceFragment(Fragment someFragment) {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_map_fragment, someFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     @Override

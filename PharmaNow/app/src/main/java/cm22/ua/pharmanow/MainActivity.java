@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToogle;
     private ActionBarDrawerToggle drawerToggle;
+    private NavController navController;
+    private AppBarConfiguration appBarConfiguration;
 
 
     @Override
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header);
         // We can now look up items within the header if needed
         //ImageView ivHeaderPhoto = headerLayout.findViewById(R.id.imageView);
+
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
