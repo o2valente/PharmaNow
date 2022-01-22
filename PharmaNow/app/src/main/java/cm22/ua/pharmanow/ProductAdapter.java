@@ -47,8 +47,10 @@ public class ProductAdapter extends
         nameTextView.setText(product.getProductName());
         TextView pharmaTextView = holder.pharmatextView;
         pharmaTextView.setText(product.getProductPharma());
+        TextView priceTextView = holder.priceTextView;
+        priceTextView.setText(product.getPrice());
         Button button = holder.messageButton;
-        button.setText("Comprar");
+        //button.setText("Comprar");
     }
 
     @Override
@@ -63,6 +65,7 @@ public class ProductAdapter extends
         // for any view that will be set as you render a row
         public TextView nameTextView;
         public TextView pharmatextView;
+        public TextView priceTextView;
         public Button messageButton;
 
         // We also create a constructor that accepts the entire item row
@@ -74,7 +77,9 @@ public class ProductAdapter extends
 
             nameTextView = (TextView) itemView.findViewById(R.id.item_productName);
             pharmatextView = (TextView) itemView.findViewById(R.id.item_productPharma);
+            priceTextView = (TextView) itemView.findViewById(R.id.item_productPrice);
             messageButton = (Button) itemView.findViewById(R.id.item_message_button);
+
         }
     }
 }

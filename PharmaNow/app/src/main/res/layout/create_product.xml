@@ -22,6 +22,14 @@
             android:minHeight="48dp"
             android:text="Name" />
 
+        <EditText
+            android:id="@+id/editTextPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp" />
+
         <Spinner
             android:id="@+id/spinnerPharm"
             android:layout_width="395dp"
@@ -35,11 +43,11 @@
         <Button
             android:id="@+id/btnSubmit"
             android:layout_width="wrap_content"
-            android:layout_height="39dp"
+            android:layout_height="48dp"
             android:layout_marginStart="6dp"
             android:layout_marginBottom="591dp"
             android:minHeight="48dp"
-            android:text="Button" />
+            android:text="Submit" />
 
     </LinearLayout>
 

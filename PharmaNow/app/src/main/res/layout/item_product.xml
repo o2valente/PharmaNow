@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,24 +11,29 @@
 
     <TextView
         android:id="@+id/item_productName"
-        android:layout_width="0dp"
+        android:layout_width="99dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/item_productPharma"
-        android:layout_width="0dp"
+        android:layout_width="129dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/item_productPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/item_message_button"
-        android:layout_width="wrap_content"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textSize="10sp"
-        />
+        tools:ignore="SpeakableTextPresentCheck"
+        tools:text="Buy" />
 </LinearLayout>

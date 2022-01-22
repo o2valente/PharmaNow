@@ -11,12 +11,15 @@ public class Product{
 
     String productPharma;
 
+    String price;
+
     public Product(){}
 
-    public Product(String productId, String productName, String productPharma) {
+    public Product(String productId, String productName, String productPharma, String price) {
         this.productId = productId;
         this.productName = productName;
         this.productPharma = productPharma;
+        this.price = price;
     }
 
     @PropertyName("productId")
@@ -34,6 +37,9 @@ public class Product{
         this.productPharma = productPharma;
     }
 
+    @PropertyName("price")
+    public void setPrice(String price){this.price = price;}
+
     @PropertyName("productId")
     public String getProductId() {
         return productId;
@@ -48,4 +54,7 @@ public class Product{
     public String getProductPharma() {
         return productPharma;
     }
+
+    @PropertyName("price")
+    public String getPrice(){return price;}
 }

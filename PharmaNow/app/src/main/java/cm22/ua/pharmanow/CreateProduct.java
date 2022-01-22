@@ -32,6 +32,7 @@ public class CreateProduct extends Fragment {
     EditText productName;
     Button productSubmit;
     Spinner pharmaSpinner;
+    EditText priceText;
 
     DatabaseReference databaseProducts;
 
@@ -49,6 +50,7 @@ public class CreateProduct extends Fragment {
         View root = inflater.inflate(R.layout.create_product, container, false);
 
         productName = root.findViewById(R.id.productName);
+        priceText = root.findViewById(R.id.editTextPrice);
         productSubmit = root.findViewById(R.id.btnSubmit);
         pharmaSpinner = root.findViewById(R.id.spinnerPharm);
 
@@ -70,11 +72,12 @@ public class CreateProduct extends Fragment {
     private void addProduct(){
         String name = productName.getText().toString().trim();
         String pharmacy = pharmaSpinner.getSelectedItem().toString();
+        String price = priceText.getText().toString().trim();
 
 
         if(!TextUtils.isEmpty(name)){
             String id = databaseProducts.push().getKey();
-            Product product = new Product(id, name, pharmacy);
+            Product product = new Product(id, name, pharmacy,price);
 
             databaseProducts.child(id).setValue(product);
 
