@@ -79,6 +79,7 @@ public class FirstFragment extends Fragment {
                 // Set layout manager to position the items
                 rvProducts.setLayoutManager(new LinearLayoutManager(getContext()));
 
+
             }
 
             @Override

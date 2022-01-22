@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,9 @@ public class ShoppingCartFragment extends Fragment {
     DatabaseReference databaseProducts;
     private String userId;
     Button btnRemove;
+    Button btnBuyAll;
+    TextView totalCost;
+
 
     public ShoppingCartFragment() {
         // Required empty public constructor
@@ -49,6 +53,10 @@ public class ShoppingCartFragment extends Fragment {
 
         btnRemove = inflater.inflate(R.layout.item_shoppingcart_product, container, false).findViewById(R.id.sc_remove_button);
 
+        totalCost = rootView.findViewById(R.id.sc_totalCost);
+
+        btnBuyAll = rootView.findViewById(R.id.sc_BuyAll);
+
         List<Product> products = new ArrayList<>();
 
         databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -62,12 +70,8 @@ public class ShoppingCartFragment extends Fragment {
                     //products.add(new Product(id, name, pharma));
                     products.add(dsp.getValue(Product.class));
                 }
-                // Create adapter passing in the sample user data
-                ShoppingCartProductAdapter adapter = new ShoppingCartProductAdapter(products);
-                // Attach the adapter to the recyclerview to populate items
-                rvProducts.setAdapter(adapter);
-                // Set layout manager to position the items
-                rvProducts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
 
                 btnRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -81,6 +85,19 @@ public class ShoppingCartFragment extends Fragment {
                     }
                 });
 
+                double totalCosTemp=0;
+                for(Product p : products) totalCosTemp += Double.parseDouble(p.price);
+                totalCost.setText("Total: " + String.valueOf(totalCosTemp));
+
+                // Create adapter passing in the sample user data
+                ShoppingCartProductAdapter adapter = new ShoppingCartProductAdapter(products);
+                // Attach the adapter to the recyclerview to populate items
+                rvProducts.setAdapter(adapter);
+                // Set layout manager to position the items
+                rvProducts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+
             }
 
             @Override
@@ -90,6 +107,25 @@ public class ShoppingCartFragment extends Fragment {
         });
 
 
+        btnBuyAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot dsp : snapshot.getChildren()){
+                            System.out.println(dsp.getValue().toString());
+                            dsp.getRef().removeValue();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
 
 
 

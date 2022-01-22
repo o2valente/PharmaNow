@@ -75,6 +75,10 @@ public class CreateProduct extends Fragment {
         String pharmacy = pharmaSpinner.getSelectedItem().toString();
         String price = priceText.getText().toString().trim();
 
+        if(price.contains(",")){
+            price = price.replace(",",".");
+        }
+
         if(!TextUtils.isEmpty(name)){
             String id = databaseProducts.push().getKey();
             Product product = new Product(id, name, pharmacy,price);
