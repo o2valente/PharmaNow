@@ -34,8 +34,7 @@ public class FirstFragment extends Fragment {
 
     DatabaseReference databaseProducts;
     //private FirebaseAuth auth;
-    private String userEmail;
-    private Button btnBuy;
+
 
     public FirstFragment() {
         // Required empty public constructor

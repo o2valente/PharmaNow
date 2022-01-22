@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_ShoppingCart_fragment:
                 fragmentClass = ShoppingCartFragment.class;
+                break;
             default:
                 fragmentClass = FirstFragment.class;
         }

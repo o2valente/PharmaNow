@@ -51,10 +51,11 @@ public class ProductAdapter extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        // Initialize products
-        databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
         //get user
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // Initialize products
+        databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
+
 
 
         //databaseProducts.child(id).setValue(shoppingCart);

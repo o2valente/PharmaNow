@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,13 +8,13 @@
     android:paddingBottom="10dp">
 
     <TextView
-        android:id="@+id/item_productName"
+        android:id="@+id/item_sc_productName"
         android:layout_width="99dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/item_productPrice"
+        android:id="@+id/item_sc_productPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1" />

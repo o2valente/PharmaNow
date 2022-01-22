@@ -9,11 +9,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +38,11 @@ public class ShoppingCartProductAdapter extends
     DatabaseReference databaseProducts;
     private String userId;
 
-
-
     // Pass in the contact array into the constructor
     public ShoppingCartProductAdapter(List<Product> products) {
         mProducts = products;
     }
+
 
     @NonNull
     @Override
@@ -42,21 +50,18 @@ public class ShoppingCartProductAdapter extends
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View productsView = inflater.inflate(R.layout.item_product, parent, false);
+        View productsView = inflater.inflate(R.layout.item_shoppingcart_product, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(productsView);
-
-        return viewHolder;
+        return new ViewHolder(productsView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        // Initialize products
-        databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
         //get user
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
+        // Initialize products
+        databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
 
         //databaseProducts.child(id).setValue(shoppingCart);
         Product product = mProducts.get(position);
@@ -64,18 +69,30 @@ public class ShoppingCartProductAdapter extends
         // Set item views based on your views and data model
         TextView nameTextView = holder.nameTextView;
         nameTextView.setText(product.getProductName());
-        TextView pharmaTextView = holder.pharmatextView;
-        pharmaTextView.setText(product.getProductPharma());
         TextView priceTextView = holder.priceTextView;
         priceTextView.setText(product.getPrice());
         Button button = holder.messageButton;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cartProdcuts.add(product);
-                String id = databaseProducts.push().getKey();
-                databaseProducts.child(userId).child("productsList").child(id).setValue(product);
-                //databaseProducts.child(id).setValue(shoppingCart);
+                databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot dsp : snapshot.getChildren()){
+                            System.out.println(dsp.getValue().toString());
+                            if(dsp.child("productName").getValue().toString().equals(product.getProductName()) && dsp.child("productPharma").getValue().toString().equals(product.getProductPharma())){
+                                dsp.getRef().removeValue();
+                                mProducts.remove(product);
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
     }
@@ -95,7 +112,6 @@ public class ShoppingCartProductAdapter extends
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView nameTextView;
-        public TextView pharmatextView;
         public TextView priceTextView;
         public Button messageButton;
 
@@ -106,10 +122,9 @@ public class ShoppingCartProductAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            nameTextView = (TextView) itemView.findViewById(R.id.item_productName);
-            pharmatextView = (TextView) itemView.findViewById(R.id.item_productPharma);
-            priceTextView = (TextView) itemView.findViewById(R.id.item_productPrice);
-            messageButton = (Button) itemView.findViewById(R.id.item_buy_button);
+            nameTextView = (TextView) itemView.findViewById(R.id.item_sc_productName);
+            priceTextView = (TextView) itemView.findViewById(R.id.item_sc_productPrice);
+            messageButton = (Button) itemView.findViewById(R.id.sc_remove_button);
 
         }
     }

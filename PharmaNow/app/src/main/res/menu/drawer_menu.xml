@@ -27,5 +27,4 @@
             android:icon="@drawable/ic_baseline_shopping_cart_24"
             android:title="My Shopping Cart"/>
     </group>
-
 </menu>
