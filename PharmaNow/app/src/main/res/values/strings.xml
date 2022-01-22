@@ -42,6 +42,7 @@
     
     <string name="maps_api_key">AIzaSyA0D40Hg49PUk4epOYC4vuyStomxXh1C9Y</string>
 
+    <string name="action_search">Search</string>
 
 </resources>
 

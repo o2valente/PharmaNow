@@ -85,9 +85,14 @@ public class CreateProduct extends Fragment {
             databaseProducts.child(id).setValue(product);
 
             Toast.makeText(getActivity(), "Product Added ", Toast.LENGTH_LONG).show();
+
+            productName.setText("");
+            priceText.setText("");
+
         }else{
             Toast.makeText(getActivity(), "Enter a product name", Toast.LENGTH_LONG).show();
         }
     }
+
 
 }

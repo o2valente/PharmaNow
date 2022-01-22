@@ -21,9 +21,12 @@
 
     <Button
         android:id="@+id/sc_remove_button"
-        android:layout_width="80dp"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp" />
+        android:paddingRight="16dp"
+        android:textSize="10sp"
+        android:drawableLeft="@drawable/ic_baseline_remove_shopping_cart_24" />
+
 
 </LinearLayout>

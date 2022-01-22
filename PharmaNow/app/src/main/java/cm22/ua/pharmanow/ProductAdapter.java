@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,13 +19,15 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
 public class ProductAdapter extends
-        RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+        RecyclerView.Adapter<ProductAdapter.ViewHolder> implements Filterable {
 
     private List<Product> mProducts;
+    private List<Product> productsFull;
     private ArrayList<Product> cartProdcuts = new ArrayList<>();
     DatabaseReference databaseProducts;
     private String userId;
@@ -33,6 +37,7 @@ public class ProductAdapter extends
     // Pass in the contact array into the constructor
     public ProductAdapter(List<Product> products) {
         mProducts = products;
+        productsFull = new ArrayList<>(products);
     }
 
     @NonNull
@@ -88,6 +93,39 @@ public class ProductAdapter extends
     public Product getItem(int position) {
         return mProducts.get(position);
     }
+
+    @Override
+    public Filter getFilter() {
+        return productFilter;
+    }
+
+    private Filter productFilter =  new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Product> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length()==0){
+                filteredList.addAll(productsFull);
+            }else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for(Product p : productsFull){
+                    if (p.getProductName().toLowerCase().contains(filterPattern)){
+                        filteredList.add(p);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mProducts.clear();
+            mProducts.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access

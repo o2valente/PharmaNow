@@ -2,12 +2,16 @@ package cm22.ua.pharmanow;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +29,8 @@ public class PharmaProductsFragment extends Fragment {
 
     private TextView pharmaNameText;
     DatabaseReference databaseProducts;
+    ProductAdapter adapter;
+
     public PharmaProductsFragment(){}
 
     @Override
@@ -33,10 +39,14 @@ public class PharmaProductsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.pharma_products,
                 container, false);
 
+        setHasOptionsMenu(true);
+
        // pharmaNameText = rootView.findViewById(R.id.pharmaName);
 
         Bundle bundle = this.getArguments();
         String pharma = bundle.getString("requestKey");
+
+
 
         System.out.println(pharma);
 
@@ -64,7 +74,7 @@ public class PharmaProductsFragment extends Fragment {
 
                 }
                 // Create adapter passing in the sample user data
-                ProductAdapter adapter = new ProductAdapter(products);
+                adapter = new ProductAdapter(products);
                 // Attach the adapter to the recyclerview to populate items
                 rvProducts.setAdapter(adapter);
                 // Set layout manager to position the items
@@ -79,6 +89,28 @@ public class PharmaProductsFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.product_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu,inflater);
     }
 
 }

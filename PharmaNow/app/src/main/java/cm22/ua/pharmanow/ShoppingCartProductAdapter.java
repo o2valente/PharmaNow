@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class ShoppingCartProductAdapter extends
 
 
     private List<Product> mProducts;
+    private List<Product> productsFull;
     private ArrayList<Product> cartProdcuts = new ArrayList<>();
     DatabaseReference databaseProducts;
     private String userId;
@@ -41,6 +43,7 @@ public class ShoppingCartProductAdapter extends
     // Pass in the contact array into the constructor
     public ShoppingCartProductAdapter(List<Product> products) {
         mProducts = products;
+        productsFull = new ArrayList<>(products);
     }
 
 
@@ -102,9 +105,38 @@ public class ShoppingCartProductAdapter extends
         return mProducts.size();
     }
 
-    public Product getItem(int position) {
-        return mProducts.get(position);
+    //@Override
+    public Filter getFilter() {
+        return productFilter;
     }
+
+    private Filter productFilter =  new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Product> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length()==0){
+                filteredList.addAll(productsFull);
+            }else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for(Product p : productsFull){
+                    if (p.getProductName().toLowerCase().contains(filterPattern)){
+                        filteredList.add(p);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mProducts.clear();
+            mProducts.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access

@@ -2,6 +2,9 @@ package cm22.ua.pharmanow;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -9,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +35,7 @@ public class ShoppingCartFragment extends Fragment {
     Button btnRemove;
     Button btnBuyAll;
     TextView totalCost;
+    ShoppingCartProductAdapter adapter;
 
 
     public ShoppingCartFragment() {
@@ -42,6 +47,8 @@ public class ShoppingCartFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.shopping_cart,
                 container, false);
+
+        setHasOptionsMenu(true);
 
         // Lookup the recyclerview in activity layout
         RecyclerView rvProducts = (RecyclerView) rootView.findViewById(R.id.rvShoppingCartProducts);
@@ -90,7 +97,7 @@ public class ShoppingCartFragment extends Fragment {
                 totalCost.setText("Total: " + String.valueOf(totalCosTemp));
 
                 // Create adapter passing in the sample user data
-                ShoppingCartProductAdapter adapter = new ShoppingCartProductAdapter(products);
+                adapter = new ShoppingCartProductAdapter(products);
                 // Attach the adapter to the recyclerview to populate items
                 rvProducts.setAdapter(adapter);
                 // Set layout manager to position the items
@@ -130,5 +137,27 @@ public class ShoppingCartFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.product_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu,inflater);
     }
 }
