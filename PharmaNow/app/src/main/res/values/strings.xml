@@ -43,6 +43,9 @@
     <string name="maps_api_key">AIzaSyA0D40Hg49PUk4epOYC4vuyStomxXh1C9Y</string>
 
     <string name="action_search">Search</string>
+    <string name="qr_code">qr_code</string>
+    <string name="enter_your_info">Enter your info</string>
+    <string name="generate_qr_code">Generate QR Code</string>
 
 </resources>
 

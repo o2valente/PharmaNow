@@ -21,12 +21,19 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ScanMode;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.Result;
 
 public class ScannerFragment extends Fragment {
 
     private CodeScanner mCodeScanner;
     TextView tv_TextView;
+    DatabaseReference databasePurchase;
+    Purchase purchase;
 
     public ScannerFragment(){}
 
@@ -61,13 +68,33 @@ public class ScannerFragment extends Fragment {
         mCodeScanner = new CodeScanner(activity, scannerView);
         mCodeScanner.setAutoFocusEnabled(true);
         mCodeScanner.setScanMode(ScanMode.CONTINUOUS);
+        databasePurchase = FirebaseDatabase.getInstance().getReference("Purchases");
+
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        tv_TextView.setText(result.getText());
+                        databasePurchase.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot dsp : snapshot.getChildren()){
+                                    if(dsp.child("id").getValue().toString().equals(result.getText())){
+                                        purchase = dsp.getValue(Purchase.class);
+                                        tv_TextView.setText("Purchase (" + purchase.getId() + ") confirmed for user " + purchase.getUser());
+                                    }
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
                     }
                 });
             }

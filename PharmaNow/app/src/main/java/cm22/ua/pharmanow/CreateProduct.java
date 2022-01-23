@@ -58,11 +58,16 @@ public class CreateProduct extends Fragment {
         databaseProducts = FirebaseDatabase.getInstance().getReference("products");
 
 
-
         productSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addProduct();
+                boolean added = addProduct();
+                if(added){
+                    Toast.makeText(getActivity(), "Product Added ", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getActivity(), "Enter a product name", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -70,7 +75,7 @@ public class CreateProduct extends Fragment {
     }
 
 
-    private void addProduct(){
+    private boolean addProduct(){
         String name = productName.getText().toString().trim();
         String pharmacy = pharmaSpinner.getSelectedItem().toString();
         String price = priceText.getText().toString().trim();
@@ -84,13 +89,14 @@ public class CreateProduct extends Fragment {
             Product product = new Product(id, name, pharmacy,price);
             databaseProducts.child(id).setValue(product);
 
-            Toast.makeText(getActivity(), "Product Added ", Toast.LENGTH_LONG).show();
-
             productName.setText("");
             priceText.setText("");
 
+            return true;
+
         }else{
-            Toast.makeText(getActivity(), "Enter a product name", Toast.LENGTH_LONG).show();
+
+            return false;
         }
     }
 

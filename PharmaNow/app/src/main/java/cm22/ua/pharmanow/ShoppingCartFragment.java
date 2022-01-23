@@ -25,17 +25,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ShoppingCartFragment extends Fragment {
 
     DatabaseReference databaseProducts;
+    DatabaseReference databasePurchases;
     private String userId;
     Button btnRemove;
     Button btnBuyAll;
     TextView totalCost;
     ShoppingCartProductAdapter adapter;
+    //String purchaseId="";
+    double totalCosTemp=0;
 
 
     public ShoppingCartFragment() {
@@ -57,6 +64,7 @@ public class ShoppingCartFragment extends Fragment {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Initialize products
         databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
+        databasePurchases = FirebaseDatabase.getInstance().getReference("Purchases");
 
         btnRemove = inflater.inflate(R.layout.item_shoppingcart_product, container, false).findViewById(R.id.sc_remove_button);
 
@@ -79,7 +87,6 @@ public class ShoppingCartFragment extends Fragment {
                 }
 
 
-
                 btnRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -92,9 +99,13 @@ public class ShoppingCartFragment extends Fragment {
                     }
                 });
 
-                double totalCosTemp=0;
-                for(Product p : products) totalCosTemp += Double.parseDouble(p.price);
-                totalCost.setText("Total: " + String.valueOf(totalCosTemp));
+                if(!products.isEmpty()){
+                    for(Product p : products) totalCosTemp += Double.parseDouble(p.price);
+                    totalCost.setText("Total: " + String.valueOf(totalCosTemp));
+                }else{
+                    totalCost.setText("No items in Shopping Cart");
+                }
+
 
                 // Create adapter passing in the sample user data
                 adapter = new ShoppingCartProductAdapter(products);
@@ -117,11 +128,14 @@ public class ShoppingCartFragment extends Fragment {
         btnBuyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for(DataSnapshot dsp : snapshot.getChildren()){
-                            System.out.println(dsp.getValue().toString());
+                            //System.out.println(dsp.getValue().toString());
+                            //purchaseId = purchaseId + dsp.child("productName").getValue().toString();
                             dsp.getRef().removeValue();
                         }
                     }
@@ -131,6 +145,13 @@ public class ShoppingCartFragment extends Fragment {
 
                     }
                 });
+
+                String id = databaseProducts.push().getKey();
+                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                //purchaseId = id+purchaseId;
+                Purchase purchase = new Purchase(id, email, products, currentDate,totalCosTemp, false);
+                databasePurchases.child(id).setValue(purchase);
             }
         });
 

@@ -35,42 +35,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FirstFragment extends Fragment {
+public class PurchaseFragment extends Fragment {
 
-    DatabaseReference databaseProducts;
-    ProductAdapter adapter;
+    DatabaseReference databasePurchases;
+    PurchaseAdapter adapter;
     //private FirebaseAuth auth;
 
 
-    public FirstFragment() {
+    public PurchaseFragment() {
         // Required empty public constructor
     }
 
 
-   // @Override
+    // @Override
     //public void onCreate(Bundle savedInstanceState) {
-       // super.onCreate(savedInstanceState);
-   // }
+    // super.onCreate(savedInstanceState);
+    // }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.placeholder1,
+        View rootView = inflater.inflate(R.layout.my_purchases,
                 container, false);
 
         setHasOptionsMenu(true);
 
         // Lookup the recyclerview in activity layout
-        RecyclerView rvProducts = (RecyclerView) rootView.findViewById(R.id.rvProducts);
+        RecyclerView rvProducts = (RecyclerView) rootView.findViewById(R.id.rvPurchases);
 
         // Initialize products
-        databaseProducts = FirebaseDatabase.getInstance().getReference();
+        databasePurchases = FirebaseDatabase.getInstance().getReference("Purchases");
 
-        List<Product> products = new ArrayList<>();
+        List<Purchase> purchases = new ArrayList<>();
 
 
-        databaseProducts.child("products").addListenerForSingleValueEvent(new ValueEventListener() {
+        databasePurchases.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dsp : snapshot.getChildren()) {
@@ -79,10 +79,10 @@ public class FirstFragment extends Fragment {
                     String name = dsp.child("productName").getValue().toString();
                     String pharma = dsp.child("productPharma").getValue().toString();*/
                     //products.add(new Product(id, name, pharma));
-                    products.add(dsp.getValue(Product.class));
+                    purchases.add(dsp.getValue(Purchase.class));
                 }
                 // Create adapter passing in the sample user data
-                adapter = new ProductAdapter(products);
+                adapter = new PurchaseAdapter(purchases);
                 // Attach the adapter to the recyclerview to populate items
                 rvProducts.setAdapter(adapter);
                 // Set layout manager to position the items
@@ -99,58 +99,7 @@ public class FirstFragment extends Fragment {
 
 
 
-
-        /*databaseProducts.child("products").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()){
-                    Toast.makeText(getActivity(), "Could not read data!", Toast.LENGTH_SHORT).show();
-                }else{
-                    for(DataSnapshot dsp : task.getResult().getChildren()){
-                        //System.out.println(dsp.child("productName").getValue());
-                        String id = dsp.child("productId").getValue().toString();
-                        String name = dsp.child("productName").getValue().toString();
-                        String pharma = dsp.child("productPharma").getValue().toString();
-                        products.add(new Product(id,name,pharma));
-                    }
-
-                }
-            }
-
-        });*/
-        /*Product p = products.get(0);
-        System.out.printf("TESTE: %s-%s-%s",p.productId,p.productName,p.productPharma);*/
-
-        //products.add(new Product("1", "aspirina", "Farmácia Aveiro"));
-        //System.out.print(products.size() + "Produtos");
-
-
-
         return rootView;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.product_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-        super.onCreateOptionsMenu(menu,inflater);
     }
 
 
