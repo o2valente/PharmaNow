@@ -1,6 +1,12 @@
 package cm22.ua.pharmanow;
 
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +19,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -64,6 +72,29 @@ public class CreateProduct extends Fragment {
                 boolean added = addProduct();
                 if(added){
                     Toast.makeText(getActivity(), "Product Added ", Toast.LENGTH_LONG).show();
+
+                    // Create an explicit intent for an Activity in your app
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
+
+                    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getContext(), "M_CH_ID");
+
+                    notificationBuilder.setAutoCancel(true)
+                            .setDefaults(Notification.DEFAULT_ALL)
+                            //.setWhen(System.currentTimeMillis())
+                            .setSmallIcon(R.drawable.ic_baseline_store_24)
+                            //.setTicker("Hearty365")
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT) // this is deprecated in API 26 but you can still use for below 26. check below update for 26 API
+                            .setContentTitle("product Added")
+                            .setContentText("New Item added to the products list.");
+                            //.setContentInfo("Info");
+
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+// notificationId is a unique int for each notification that you must define
+                    notificationManager.notify(1, notificationBuilder.build());
+                    //NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(getContext().NOTIFICATION_SERVICE);
+                    //notificationManager.notify(1, notificationBuilder.build());
                 }else{
                     Toast.makeText(getActivity(), "Enter a product name", Toast.LENGTH_LONG).show();
                 }
@@ -88,6 +119,7 @@ public class CreateProduct extends Fragment {
             String id = databaseProducts.push().getKey();
             Product product = new Product(id, name, pharmacy,price);
             databaseProducts.child(id).setValue(product);
+
 
             productName.setText("");
             priceText.setText("");
