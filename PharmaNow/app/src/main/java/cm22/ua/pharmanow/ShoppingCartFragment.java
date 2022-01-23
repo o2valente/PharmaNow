@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ShoppingCartFragment extends Fragment {
+public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduct{
 
     DatabaseReference databaseProducts;
     DatabaseReference databasePurchases;
@@ -108,7 +108,7 @@ public class ShoppingCartFragment extends Fragment {
 
 
                 // Create adapter passing in the sample user data
-                adapter = new ShoppingCartProductAdapter(products);
+                adapter = new ShoppingCartProductAdapter(products, ShoppingCartFragment.this::onRemoveProduct);
                 // Attach the adapter to the recyclerview to populate items
                 rvProducts.setAdapter(adapter);
                 // Set layout manager to position the items
@@ -180,5 +180,16 @@ public class ShoppingCartFragment extends Fragment {
             }
         });
         super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public void onRemoveProduct(double price) {
+        System.out.println("Total = "+totalCosTemp+", "+price);
+        totalCosTemp -= price;
+        System.out.println(String.format("Total = %.2f" , totalCosTemp));
+        if(totalCosTemp <= 0)
+            totalCost.setText("No items in Shopping Cart");
+        else
+            totalCost.setText(String.format("Total: %.2f" , totalCosTemp));
     }
 }

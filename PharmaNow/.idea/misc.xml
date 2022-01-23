@@ -38,6 +38,12 @@
         <entry key="..\:/Users/pmate/OneDrive/Ambiente de Trabalho/PharmaNow/PharmaNow/app/src/main/res/menu/drawer_menu.xml" value="0.264" />
         <entry key="..\:/Users/pmate/OneDrive/Ambiente de Trabalho/PharmaNow/PharmaNow/app/src/main/res/menu/main_menu.xml" value="0.1625" />
         <entry key="..\:/Users/pmate/OneDrive/Ambiente de Trabalho/PharmaNow/PharmaNow/app/src/main/res/menu/product_menu.xml" value="0.2" />
+        <entry key="..\:/Users/samue/StudioProjects/PharmaNow/PharmaNow/app/src/main/res/drawable/ic_baseline_add_business_24.xml" value="0.22552083333333334" />
+        <entry key="..\:/Users/samue/StudioProjects/PharmaNow/PharmaNow/app/src/main/res/drawable/ic_baseline_add_shopping_cart_24.xml" value="0.22552083333333334" />
+        <entry key="..\:/Users/samue/StudioProjects/PharmaNow/PharmaNow/app/src/main/res/drawable/ic_baseline_attach_money_24.xml" value="0.22552083333333334" />
+        <entry key="..\:/Users/samue/StudioProjects/PharmaNow/PharmaNow/app/src/main/res/drawable/ic_baseline_map_24.xml" value="0.22552083333333334" />
+        <entry key="..\:/Users/samue/StudioProjects/PharmaNow/PharmaNow/app/src/main/res/layout/item_shoppingcart_product.xml" value="0.1" />
+        <entry key="..\:/Users/samue/StudioProjects/PharmaNow/PharmaNow/app/src/main/res/layout/shopping_cart.xml" value="0.209375" />
       </map>
     </option>
   </component>

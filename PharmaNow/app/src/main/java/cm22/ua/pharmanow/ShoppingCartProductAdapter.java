@@ -1,6 +1,7 @@
 package cm22.ua.pharmanow;
 
 import android.content.Context;
+import android.icu.lang.UScript;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,11 +40,13 @@ public class ShoppingCartProductAdapter extends
     private ArrayList<Product> cartProdcuts = new ArrayList<>();
     DatabaseReference databaseProducts;
     private String userId;
+    OnRemoveCartProduct listener;
 
     // Pass in the contact array into the constructor
-    public ShoppingCartProductAdapter(List<Product> products) {
+    public ShoppingCartProductAdapter(List<Product> products, OnRemoveCartProduct listener) {
         mProducts = products;
         productsFull = new ArrayList<>(products);
+        this.listener = listener;
     }
 
 
@@ -85,8 +88,6 @@ public class ShoppingCartProductAdapter extends
                             System.out.println(dsp.getValue().toString());
                             if(dsp.child("productName").getValue().toString().equals(product.getProductName()) && dsp.child("productPharma").getValue().toString().equals(product.getProductPharma())){
                                 dsp.getRef().removeValue();
-                                mProducts.remove(product);
-
                             }
                         }
                     }
@@ -96,6 +97,13 @@ public class ShoppingCartProductAdapter extends
 
                     }
                 });
+                System.out.println("AQUI "+holder.getAdapterPosition());
+                Product p = mProducts.get(holder.getAdapterPosition());
+                System.out.println("Product= "+p.getPrice());
+                listener.onRemoveProduct(Double.parseDouble(p.getPrice()));
+                mProducts.remove(holder.getAdapterPosition());
+                notifyItemRemoved(holder.getAdapterPosition());
+
             }
         });
     }
@@ -146,7 +154,6 @@ public class ShoppingCartProductAdapter extends
         public TextView nameTextView;
         public TextView priceTextView;
         public Button messageButton;
-
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
         public ViewHolder(View itemView) {
@@ -157,6 +164,7 @@ public class ShoppingCartProductAdapter extends
             nameTextView = (TextView) itemView.findViewById(R.id.item_sc_productName);
             priceTextView = (TextView) itemView.findViewById(R.id.item_sc_productPrice);
             messageButton = (Button) itemView.findViewById(R.id.sc_remove_button);
+
 
         }
     }
