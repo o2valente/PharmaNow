@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "M_CH_ID";
             String description = "First channel";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel("M_CH_ID", name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
@@ -126,6 +126,17 @@ public class MainActivity extends AppCompatActivity {
         View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header);
         // We can now look up items within the header if needed
         //ImageView ivHeaderPhoto = headerLayout.findViewById(R.id.imageView);
+
+        Fragment fragment = null;
+        try {
+            fragment = (Fragment) FirstFragment.class.newInstance();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
 
 

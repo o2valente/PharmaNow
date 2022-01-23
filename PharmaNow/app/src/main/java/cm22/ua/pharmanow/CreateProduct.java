@@ -87,7 +87,8 @@ public class CreateProduct extends Fragment {
                             //.setTicker("Hearty365")
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT) // this is deprecated in API 26 but you can still use for below 26. check below update for 26 API
                             .setContentTitle("product Added")
-                            .setContentText("New Item added to the products list.");
+                            .setContentText("New Item added to the products list.")
+                            .setDefaults(Notification.DEFAULT_VIBRATE);
                             //.setContentInfo("Info");
 
                     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
