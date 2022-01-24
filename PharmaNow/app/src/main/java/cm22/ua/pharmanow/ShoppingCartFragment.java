@@ -128,7 +128,6 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
         btnBuyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
@@ -145,13 +144,18 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
 
                     }
                 });
-
                 String id = databaseProducts.push().getKey();
                 String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                 String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
                 //purchaseId = id+purchaseId;
                 Purchase purchase = new Purchase(id, email, products, currentDate,totalCosTemp, false);
                 databasePurchases.child(id).setValue(purchase);
+
+                adapter.removeAll();
+                totalCost.setText("No items in Shopping Cart");
+
+                Toast.makeText(getActivity(),"Purchage successful", Toast.LENGTH_SHORT).show();
+
             }
         });
 

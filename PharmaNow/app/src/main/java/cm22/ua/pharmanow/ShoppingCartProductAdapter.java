@@ -108,6 +108,11 @@ public class ShoppingCartProductAdapter extends
         });
     }
 
+    public void removeAll(){
+        mProducts.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return mProducts.size();
