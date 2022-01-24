@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="100dp"
         android:paddingRight="100dp"
+        android:background="@color/teal_700"
         app:layout_constraintBottom_toTopOf="@+id/sc_BuyAll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

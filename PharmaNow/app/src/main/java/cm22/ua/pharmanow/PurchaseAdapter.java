@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +52,9 @@ public class PurchaseAdapter extends
     Bitmap bitmap;
     QRGEncoder qrgEncoder;
     Display display;
+    AlertDialog.Builder dialogBuilder;
+    AlertDialog dialog;
+    View popUpView;
 
 
 
@@ -69,10 +73,14 @@ public class PurchaseAdapter extends
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View productsView = inflater.inflate(R.layout.item_purchase, parent, false);
+        popUpView = inflater.inflate(R.layout.qrcode_popup, parent, false);
+
 
         ViewHolder viewHolder = new ViewHolder(productsView);
 
         display = productsView.getContext().getDisplay();
+        dialogBuilder = new AlertDialog.Builder(productsView.getContext());
+
 
         return viewHolder;
     }
@@ -80,11 +88,6 @@ public class PurchaseAdapter extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        //get user
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // Initialize products
-        databasePurchases = FirebaseDatabase.getInstance().getReference("ShoppingCart");
-        //databaseProducts.child(id).setValue(shoppingCart);
         Purchase purchase = mPurchase.get(position);
 
         // Set item views based on your views and data model
@@ -92,47 +95,65 @@ public class PurchaseAdapter extends
         nameTextView.setText(purchase.getDate());
         TextView priceTextView = holder.priceTextView;
         priceTextView.setText(String.valueOf(purchase.getTotalCost()));
-        ImageView qrImageView = holder.qrImage;
         Button button = holder.messageButton;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO generate qrcode
-
-
-                // below line is for getting
-                // the windowmanager service.
-                // creating a variable for point which
-                // is to be displayed in QR Code.
-                Point point = new Point();
-                display.getSize(point);
-
-                // getting width and
-                // height of a point
-                int width = point.x;
-                int height = point.y;
-
-                // generating dimension from width and height.
-                int dimen = width < height ? width : height;
-                dimen = dimen * 3 / 4;
-
-                // setting this dimensions inside our qr code
-                // encoder to generate our qr code.
-                qrgEncoder = new QRGEncoder(purchase.id, null, QRGContents.Type.TEXT, dimen);
-                try {
-                    // getting our qrcode in the form of bitmap.
-                    bitmap = qrgEncoder.encodeAsBitmap();
-                    // the bitmap is set inside our image
-                    // view using .setimagebitmap method.
-                    qrImageView.setImageBitmap(bitmap);
-                } catch (WriterException e) {
-                    // this method is called for
-                    // exception handling.
-                    Log.e("Tag", e.toString());
-                }
-
+                createDialog(purchase.id);
             }
         });
+    }
+
+    public void createDialog(String data){
+
+        Button popup_cancelBtn = popUpView.findViewById(R.id.cancelButton);
+        ImageView qrImageView = popUpView.findViewById(R.id.idIVQrcode);
+        // below line is for getting
+        // the windowmanager service.
+        // creating a variable for point which
+        // is to be displayed in QR Code.
+        Point point = new Point();
+        display.getSize(point);
+
+        // getting width and
+        // height of a point
+        int width = point.x;
+        int height = point.y;
+
+        // generating dimension from width and height.
+        int dimen = width < height ? width : height;
+        dimen = dimen * 3 / 4;
+
+        // setting this dimensions inside our qr code
+        // encoder to generate our qr code.
+        qrgEncoder = new QRGEncoder(data, null, QRGContents.Type.TEXT, dimen);
+        try {
+            // getting our qrcode in the form of bitmap.
+            bitmap = qrgEncoder.encodeAsBitmap();
+            // the bitmap is set inside our image
+            // view using .setimagebitmap method.
+            qrImageView.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            // this method is called for
+            // exception handling.
+            Log.e("Tag", e.toString());
+        }
+
+        dialogBuilder.setView(popUpView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+
+        popup_cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(popUpView.getParent() != null)
+                    ((ViewGroup) popUpView.getParent()).removeView(popUpView);
+                dialog.dismiss();
+            }
+        });
+
     }
 
     @Override
@@ -197,7 +218,7 @@ public class PurchaseAdapter extends
             dateTextView = (TextView) itemView.findViewById(R.id.itemPurchase_Date);
             priceTextView = (TextView) itemView.findViewById(R.id.itemPurchase_totalCost);
             messageButton = (Button) itemView.findViewById(R.id.itemPurchase_Qrcode);
-            qrImage = (ImageView) itemView.findViewById(R.id.idIVQrcode);
+            qrImage = (ImageView) popUpView.findViewById(R.id.idIVQrcode);
 
         }
     }

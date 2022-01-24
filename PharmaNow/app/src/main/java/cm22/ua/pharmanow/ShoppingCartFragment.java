@@ -1,5 +1,6 @@
 package cm22.ua.pharmanow;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -128,37 +130,51 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
         });
 
 
+
         btnBuyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("");
+                builder.setMessage("Do you want to buy All Items ?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
 
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot dsp : snapshot.getChildren()){
-                            //System.out.println(dsp.getValue().toString());
-                            //purchaseId = purchaseId + dsp.child("productName").getValue().toString();
-                            dsp.getRef().removeValue();
-                        }
-                    }
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot dsp : snapshot.getChildren()){
+                                    //System.out.println(dsp.getValue().toString());
+                                    //purchaseId = purchaseId + dsp.child("productName").getValue().toString();
+                                    dsp.getRef().removeValue();
+                                }
+                            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
+                            }
+                        });
+                        String prodId = databaseProducts.push().getKey();
+                        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                        //purchaseId = id+purchaseId;
+                        Purchase purchase = new Purchase(prodId, email, products, currentDate,totalCosTemp, false);
+                        databasePurchases.child(prodId).setValue(purchase);
+
+                        adapter.removeAll();
+                        totalCost.setText("No items in Shopping Cart");
+
+                        Toast.makeText(getActivity(),"Purchage successful", Toast.LENGTH_SHORT).show();    // stop chronometer here
                     }
                 });
-                String id = databaseProducts.push().getKey();
-                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                //purchaseId = id+purchaseId;
-                Purchase purchase = new Purchase(id, email, products, currentDate,totalCosTemp, false);
-                databasePurchases.child(id).setValue(purchase);
-
-                adapter.removeAll();
-                totalCost.setText("No items in Shopping Cart");
-
-                Toast.makeText(getActivity(),"Purchage successful", Toast.LENGTH_SHORT).show();
-
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
 

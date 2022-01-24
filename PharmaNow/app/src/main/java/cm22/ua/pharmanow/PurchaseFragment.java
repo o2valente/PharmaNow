@@ -64,7 +64,8 @@ public class PurchaseFragment extends Fragment {
         // Lookup the recyclerview in activity layout
         RecyclerView rvProducts = (RecyclerView) rootView.findViewById(R.id.rvPurchases);
 
-        // Initialize products
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
         databasePurchases = FirebaseDatabase.getInstance().getReference("Purchases");
 
         List<Purchase> purchases = new ArrayList<>();
@@ -74,12 +75,8 @@ public class PurchaseFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dsp : snapshot.getChildren()) {
-                    //System.out.println(dsp.child("productName").getValue());
-                    /*String id = dsp.child("productId").getValue().toString();
-                    String name = dsp.child("productName").getValue().toString();
-                    String pharma = dsp.child("productPharma").getValue().toString();*/
-                    //products.add(new Product(id, name, pharma));
-                    purchases.add(dsp.getValue(Purchase.class));
+                    if(dsp.child("user").getValue().toString().equals(userEmail))
+                        purchases.add(dsp.getValue(Purchase.class));
                 }
                 // Create adapter passing in the sample user data
                 adapter = new PurchaseAdapter(purchases);
