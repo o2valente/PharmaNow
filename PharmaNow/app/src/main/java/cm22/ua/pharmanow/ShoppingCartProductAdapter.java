@@ -41,6 +41,8 @@ public class ShoppingCartProductAdapter extends
     DatabaseReference databaseProducts;
     private String userId;
     OnRemoveCartProduct listener;
+    public static final int HEADER = 1;
+    private static final int ITEM = 2;
 
     // Pass in the contact array into the constructor
     public ShoppingCartProductAdapter(List<Product> products, OnRemoveCartProduct listener) {
@@ -53,59 +55,77 @@ public class ShoppingCartProductAdapter extends
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        View productsView = inflater.inflate(R.layout.item_shoppingcart_product, parent, false);
-
-        return new ViewHolder(productsView);
+        final View view;
+        if (viewType == HEADER) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_header, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shoppingcart_product, parent, false);
+        }
+        return new ShoppingCartProductAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if (getItemViewType(position) == HEADER) {
+            holder.headerTextView.setText("Product Name                 Price");
+        } else {
+            //get user
+            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            // Initialize products
+            databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
+            //databaseProducts.child(id).setValue(shoppingCart);
+            Product product = mProducts.get(position);
 
-        //get user
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // Initialize products
-        databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
-
-        //databaseProducts.child(id).setValue(shoppingCart);
-        Product product = mProducts.get(position);
-
-        // Set item views based on your views and data model
-        TextView nameTextView = holder.nameTextView;
-        nameTextView.setText(product.getProductName());
-        TextView priceTextView = holder.priceTextView;
-        priceTextView.setText(product.getPrice());
-        Button button = holder.messageButton;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
+            if(!product.getProductId().equals("1")){
+                // Set item views based on your views and data model
+                TextView nameTextView = holder.nameTextView;
+                nameTextView.setText(product.getProductName());
+                TextView priceTextView = holder.priceTextView;
+                priceTextView.setText(product.getPrice());
+                Button button = holder.messageButton;
+                button.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot dsp : snapshot.getChildren()){
-                            System.out.println(dsp.getValue().toString());
-                            if(dsp.child("productName").getValue().toString().equals(product.getProductName()) && dsp.child("productPharma").getValue().toString().equals(product.getProductPharma())){
-                                dsp.getRef().removeValue();
+                    public void onClick(View v) {
+                        databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot dsp : snapshot.getChildren()) {
+                                    System.out.println(dsp.getValue().toString());
+                                    if (dsp.child("productName").getValue().toString().equals(product.getProductName()) && dsp.child("productPharma").getValue().toString().equals(product.getProductPharma())) {
+                                        dsp.getRef().removeValue();
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        System.out.println("AQUI " + holder.getAdapterPosition());
+                        Product p = mProducts.get(holder.getAdapterPosition());
+                        System.out.println("Product= " + p.getPrice());
+                        listener.onRemoveProduct(Double.parseDouble(p.getPrice()));
+                        mProducts.remove(holder.getAdapterPosition());
+                        productsFull.remove(holder.getAdapterPosition());
+                        notifyItemRemoved(holder.getAdapterPosition());
+                        //notifyDataSetChanged();
 
                     }
                 });
-                System.out.println("AQUI "+holder.getAdapterPosition());
-                Product p = mProducts.get(holder.getAdapterPosition());
-                System.out.println("Product= "+p.getPrice());
-                listener.onRemoveProduct(Double.parseDouble(p.getPrice()));
-                mProducts.remove(holder.getAdapterPosition());
-                notifyItemRemoved(holder.getAdapterPosition());
-
             }
-        });
+
+
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return HEADER;
+        } else {
+            return ITEM;
+        }
     }
 
     public void removeAll(){
@@ -147,6 +167,10 @@ public class ShoppingCartProductAdapter extends
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mProducts.clear();
             mProducts.addAll((List) results.values);
+            if(mProducts.size()!=0)
+                if(!mProducts.get(0).getProductId().equals("1")) mProducts.add(0,new Product("1","dummy","dummy","1"));
+            if(productsFull.size()!=0)
+                if(!productsFull.get(0).getProductId().equals("1")) productsFull.add(0,new Product("1","dummy","dummy","1"));
             notifyDataSetChanged();
         }
     };
@@ -159,13 +183,14 @@ public class ShoppingCartProductAdapter extends
         public TextView nameTextView;
         public TextView priceTextView;
         public Button messageButton;
+        public TextView headerTextView;
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
         public ViewHolder(View itemView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-
+            headerTextView = (TextView) itemView.findViewById(R.id.item_product_header);
             nameTextView = (TextView) itemView.findViewById(R.id.item_sc_productName);
             priceTextView = (TextView) itemView.findViewById(R.id.item_sc_productPrice);
             messageButton = (Button) itemView.findViewById(R.id.sc_remove_button);

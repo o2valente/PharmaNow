@@ -23,6 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +33,8 @@ import java.util.Locale;
 // Note that we specify the custom ViewHolder which gives us access to our views
 public class ProductAdapter extends
         RecyclerView.Adapter<ProductAdapter.ViewHolder> implements Filterable {
+    public static final int HEADER = 1;
+    private static final int ITEM = 2;
 
     private List<Product> mProducts;
     private List<Product> productsFull;
@@ -44,52 +48,77 @@ public class ProductAdapter extends
     public ProductAdapter(List<Product> products) {
         mProducts = products;
         productsFull = new ArrayList<>(products);
+
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        //Context context = parent.getContext();
+        //LayoutInflater inflater = LayoutInflater.from(context);
+        final View view;
+        if (viewType == HEADER) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_header, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
+        }
+        return new ViewHolder(view);
 
-        View productsView = inflater.inflate(R.layout.item_product, parent, false);
+        //View productsView = inflater.inflate(R.layout.item_product, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(productsView);
+        //ViewHolder viewHolder = new ViewHolder(productsView);
 
-        return viewHolder;
+        //return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        //get user
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // Initialize products
-        databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
+        if (getItemViewType(position) == HEADER) {
+            holder.headerTextView.setText("Product Name         Pharmacy                 Price");
+        } else {
+            //get user
+            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            // Initialize products
+            databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
 
+            //databaseProducts.child(id).setValue(shoppingCart);
 
+            Product product = mProducts.get(position);
 
-        //databaseProducts.child(id).setValue(shoppingCart);
-        Product product = mProducts.get(position);
-
-        // Set item views based on your views and data model
-        TextView nameTextView = holder.nameTextView;
-        nameTextView.setText(product.getProductName());
-        TextView pharmaTextView = holder.pharmatextView;
-        pharmaTextView.setText(product.getProductPharma());
-        TextView priceTextView = holder.priceTextView;
-        priceTextView.setText(product.getPrice());
-        Button button = holder.messageButton;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cartProdcuts.add(product);
-                String id = databaseProducts.push().getKey();
-                databaseProducts.child(userId).child("productsList").child(id).setValue(product);
-                //databaseProducts.child(id).setValue(shoppingCart);
-                button.setBackgroundColor(Color.GREEN);
+            if(!product.getProductId().equals("1")){
+                // Set item views based on your views and data model
+                TextView nameTextView = holder.nameTextView;
+                nameTextView.setText(product.getProductName());
+                TextView pharmaTextView = holder.pharmatextView;
+                pharmaTextView.setText(product.getProductPharma());
+                TextView priceTextView = holder.priceTextView;
+                priceTextView.setText(product.getPrice());
+                Button button = holder.messageButton;
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cartProdcuts.add(product);
+                        String id = databaseProducts.push().getKey();
+                        databaseProducts.child(userId).child("productsList").child(id).setValue(product);
+                        //databaseProducts.child(id).setValue(shoppingCart);
+                        button.setBackgroundColor(Color.GREEN);
+                    }
+                });
             }
-        });
+
+
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return HEADER;
+        } else {
+            return ITEM;
+        }
     }
 
     @Override
@@ -130,6 +159,8 @@ public class ProductAdapter extends
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mProducts.clear();
             mProducts.addAll((List) results.values);
+            if(mProducts.size()!=0)
+                if(!mProducts.get(0).getProductId().equals("1")) mProducts.add(0,new Product("1","dummy","dummy","1"));
             notifyDataSetChanged();
         }
     };
@@ -143,6 +174,7 @@ public class ProductAdapter extends
         public TextView pharmatextView;
         public TextView priceTextView;
         public Button messageButton;
+        public TextView headerTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -151,6 +183,7 @@ public class ProductAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
+            headerTextView = (TextView) itemView.findViewById(R.id.item_product_header);
             nameTextView = (TextView) itemView.findViewById(R.id.item_productName);
             pharmatextView = (TextView) itemView.findViewById(R.id.item_productPharma);
             priceTextView = (TextView) itemView.findViewById(R.id.item_productPrice);

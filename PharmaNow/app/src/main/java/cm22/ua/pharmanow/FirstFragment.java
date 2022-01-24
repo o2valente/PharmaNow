@@ -34,6 +34,8 @@ import com.google.firestore.v1.Value;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.grpc.okhttp.internal.framed.Header;
+
 
 public class FirstFragment extends Fragment {
 
@@ -68,7 +70,8 @@ public class FirstFragment extends Fragment {
         databaseProducts = FirebaseDatabase.getInstance().getReference();
 
         List<Product> products = new ArrayList<>();
-
+        //dummy product to be replaced by the header
+        products.add(new Product("1","dummy","dummy","1"));
 
         databaseProducts.child("products").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -81,6 +84,7 @@ public class FirstFragment extends Fragment {
                     //products.add(new Product(id, name, pharma));
                     products.add(dsp.getValue(Product.class));
                 }
+
                 // Create adapter passing in the sample user data
                 adapter = new ProductAdapter(products);
                 // Attach the adapter to the recyclerview to populate items

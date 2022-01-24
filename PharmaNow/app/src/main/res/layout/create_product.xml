@@ -14,19 +14,19 @@
             android:id="@+id/productName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="7dp"
+            android:layout_gravity="center"
             android:ems="10"
+            android:hint="Name"
             android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:text="Name" />
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/editTextPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:ems="10"
+            android:hint="Price"
             android:inputType="numberDecimal"
             android:minHeight="48dp" />
 
@@ -44,6 +44,7 @@
             android:id="@+id/btnSubmit"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
+            android:layout_gravity="center"
             android:layout_marginStart="6dp"
             android:layout_marginBottom="591dp"
             android:minHeight="48dp"

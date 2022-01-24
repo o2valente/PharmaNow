@@ -73,6 +73,8 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
         btnBuyAll = rootView.findViewById(R.id.sc_BuyAll);
 
         List<Product> products = new ArrayList<>();
+        //dummy product to be replaced by the header
+        products.add(new Product("1","dummy","dummy","1"));
 
         databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -100,7 +102,8 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
                 });
 
                 if(!products.isEmpty()){
-                    for(Product p : products) totalCosTemp += Double.parseDouble(p.price);
+                    for(Product p : products)
+                        if(!p.getProductId().equals("1")) totalCosTemp += Double.parseDouble(p.price);
                     totalCost.setText("Total: " + String.valueOf(totalCosTemp));
                 }else{
                     totalCost.setText("No items in Shopping Cart");
