@@ -44,25 +44,19 @@ public class ScannerFragment extends Fragment {
         View root = inflater.inflate(R.layout.scanner, container, false);
         tv_TextView = root.findViewById(R.id.tv_textView);
         if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.CAMERA)) {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.CAMERA}, 1);
-                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-                if (Build.VERSION.SDK_INT >= 26) {
-                    ft.setReorderingAllowed(false);
-                }
-                ft.detach(this).attach(this).commit();
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        }else{
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity)
+                    getContext(), Manifest.permission.CAMERA)) {
+
+
             } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.CAMERA}, 1);
-                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-                if (Build.VERSION.SDK_INT >= 26) {
-                    ft.setReorderingAllowed(false);
-                }
-                ft.detach(this).attach(this).commit();
+                ActivityCompat.requestPermissions((Activity) getContext(),
+                        new String[]{Manifest.permission.CAMERA},
+                        1);
             }
+
         }
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
         mCodeScanner = new CodeScanner(activity, scannerView);
@@ -105,18 +99,42 @@ public class ScannerFragment extends Fragment {
                 mCodeScanner.startPreview();
             }
         });
+
         return root;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(getContext(),
+                            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(getContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mCodeScanner.startPreview();
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+            mCodeScanner.startPreview();
     }
 
     @Override
     public void onPause() {
-        mCodeScanner.releaseResources();
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+            mCodeScanner.releaseResources();
         super.onPause();
     }
 }
