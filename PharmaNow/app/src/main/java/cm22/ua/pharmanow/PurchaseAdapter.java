@@ -100,6 +100,8 @@ public class PurchaseAdapter extends
             @Override
             public void onClick(View v) {
                 //TODO generate qrcode
+                if(popUpView.getParent() != null)
+                    ((ViewGroup) popUpView.getParent()).removeView(popUpView);
                 createDialog(purchase.id);
             }
         });
@@ -148,8 +150,6 @@ public class PurchaseAdapter extends
         popup_cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(popUpView.getParent() != null)
-                    ((ViewGroup) popUpView.getParent()).removeView(popUpView);
                 dialog.dismiss();
             }
         });

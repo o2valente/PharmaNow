@@ -91,6 +91,7 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
 
         mMapView.onResume(); // needed to get the map to display immediately
 
+        setMapView();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -98,6 +99,14 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
             e.printStackTrace();
         }
 
+
+
+
+        return rootView;
+    }
+
+
+    private void setMapView(){
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
@@ -196,23 +205,22 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
-
-        return rootView;
     }
-
-
-
 
     @Override
     public void onResume() {
         super.onResume();
+        setMapView();
         mMapView.onResume();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            mMapView.onPause();
     }
 
     @Override
