@@ -85,7 +85,6 @@ public class PurchaseAdapter extends
         priceTextView.setText(String.valueOf(purchase.getTotalCost()));
         Button button = holder.messageButton;
         button.setOnClickListener(v -> {
-            //TODO generate qrcode
             if(popUpView.getParent() != null)
                 ((ViewGroup) popUpView.getParent()).removeView(popUpView);
             createDialog(purchase.getId());
