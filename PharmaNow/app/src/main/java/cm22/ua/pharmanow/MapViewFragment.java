@@ -1,6 +1,7 @@
 package cm22.ua.pharmanow;
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,6 +58,7 @@ public class MapViewFragment extends Fragment implements GoogleMap.OnMarkerClick
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         View rootView = inflater.inflate(R.layout.map_fragment, container, false);
         //View mainView = inflater.inflate(R.layout.activity_main, container, false);
 

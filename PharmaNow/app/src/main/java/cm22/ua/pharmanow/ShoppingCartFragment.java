@@ -1,6 +1,7 @@
 package cm22.ua.pharmanow;
 
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,7 +57,7 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.shopping_cart,
                 container, false);
-
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setHasOptionsMenu(true);
 
         // Lookup the recyclerview in activity layout

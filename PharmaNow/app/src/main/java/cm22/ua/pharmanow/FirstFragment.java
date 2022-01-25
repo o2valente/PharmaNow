@@ -1,6 +1,7 @@
 package cm22.ua.pharmanow;
 
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -58,6 +59,7 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         View rootView = inflater.inflate(R.layout.placeholder1,
                 container, false);
 

@@ -1,6 +1,7 @@
 package cm22.ua.pharmanow;
 
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -58,7 +59,7 @@ public class PurchaseFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.my_purchases,
                 container, false);
-
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setHasOptionsMenu(true);
 
         // Lookup the recyclerview in activity layout

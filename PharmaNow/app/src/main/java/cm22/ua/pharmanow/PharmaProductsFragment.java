@@ -1,5 +1,6 @@
 package cm22.ua.pharmanow;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +39,7 @@ public class PharmaProductsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.pharma_products,
                 container, false);
-
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setHasOptionsMenu(true);
 
        // pharmaNameText = rootView.findViewById(R.id.pharmaName);

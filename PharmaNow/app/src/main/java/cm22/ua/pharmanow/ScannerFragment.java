@@ -2,6 +2,7 @@ package cm22.ua.pharmanow;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ public class ScannerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final Activity activity = getActivity();
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         View root = inflater.inflate(R.layout.scanner, container, false);
         // Lookup the recyclerview in activity layout
         RecyclerView rvToDeliver = (RecyclerView) root.findViewById(R.id.rvToDeliver);
