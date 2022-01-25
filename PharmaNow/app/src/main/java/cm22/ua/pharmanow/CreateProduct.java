@@ -64,7 +64,7 @@ public class CreateProduct extends Fragment {
         pharmaSpinner = root.findViewById(R.id.spinnerPharm);
 
         databaseProducts = FirebaseDatabase.getInstance().getReference("products");
-
+        databaseProducts.keepSynced(true);
 
         productSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +74,7 @@ public class CreateProduct extends Fragment {
                     Toast.makeText(getActivity(), "Product Added ", Toast.LENGTH_LONG).show();
 
                     // Create an explicit intent for an Activity in your app
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    Intent intent = new Intent(getActivity(), FirstFragment.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
 
@@ -86,7 +86,7 @@ public class CreateProduct extends Fragment {
                             .setSmallIcon(R.drawable.ic_baseline_store_24)
                             //.setTicker("Hearty365")
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT) // this is deprecated in API 26 but you can still use for below 26. check below update for 26 API
-                            .setContentTitle("product Added")
+                            .setContentTitle("Product added")
                             .setContentText("New Item added to the products list.")
                             .setDefaults(Notification.DEFAULT_VIBRATE);
                             //.setContentInfo("Info");

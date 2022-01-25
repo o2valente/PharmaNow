@@ -68,6 +68,7 @@ public class FirstFragment extends Fragment {
 
         // Initialize products
         databaseProducts = FirebaseDatabase.getInstance().getReference();
+        databaseProducts.keepSynced(true);
 
         List<Product> products = new ArrayList<>();
         //dummy product to be replaced by the header

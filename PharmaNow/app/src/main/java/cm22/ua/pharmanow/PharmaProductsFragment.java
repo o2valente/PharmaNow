@@ -58,6 +58,7 @@ public class PharmaProductsFragment extends Fragment {
 
         // Initialize contacts
         databaseProducts = FirebaseDatabase.getInstance().getReference();
+        databaseProducts.keepSynced(true);
 
         databaseProducts.child("products").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

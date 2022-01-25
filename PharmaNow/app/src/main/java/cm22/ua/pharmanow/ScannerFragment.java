@@ -72,7 +72,7 @@ public class ScannerFragment extends Fragment {
         mCodeScanner.setAutoFocusEnabled(true);
         mCodeScanner.setScanMode(ScanMode.CONTINUOUS);
         databasePurchase = FirebaseDatabase.getInstance().getReference("Purchases");
-
+        databasePurchase.keepSynced(true);
 
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override

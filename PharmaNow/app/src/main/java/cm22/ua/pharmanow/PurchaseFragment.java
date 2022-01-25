@@ -67,6 +67,7 @@ public class PurchaseFragment extends Fragment {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
         databasePurchases = FirebaseDatabase.getInstance().getReference("Purchases");
+        databasePurchases.keepSynced(true);
 
         List<Purchase> purchases = new ArrayList<>();
 

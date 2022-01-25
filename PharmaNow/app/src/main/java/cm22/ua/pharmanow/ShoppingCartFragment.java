@@ -66,7 +66,9 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Initialize products
         databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
+        databaseProducts.keepSynced(true);
         databasePurchases = FirebaseDatabase.getInstance().getReference("Purchases");
+        databasePurchases.keepSynced(true);
 
         btnRemove = inflater.inflate(R.layout.item_shoppingcart_product, container, false).findViewById(R.id.sc_remove_button);
 
