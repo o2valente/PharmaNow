@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,6 +30,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import cm22.ua.pharmanow.R;
+import cm22.ua.pharmanow.datamodel.Product;
+import cm22.ua.pharmanow.datamodel.ShoppingCart;
+import cm22.ua.pharmanow.fragments.CreateProduct;
+import cm22.ua.pharmanow.fragments.FirstFragment;
+import cm22.ua.pharmanow.fragments.MapViewFragment;
+import cm22.ua.pharmanow.fragments.ProfileFragment;
+import cm22.ua.pharmanow.fragments.PurchaseFragment;
+import cm22.ua.pharmanow.fragments.ScannerFragment;
+import cm22.ua.pharmanow.fragments.ShoppingCartFragment;
 
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
@@ -224,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = CreateProduct.class;
                 break;
             case R.id.nav_profile_fragment:
-                fragmentClass = ProfileActivity.class;
+                fragmentClass = ProfileFragment.class;
                 break;
             case R.id.nav_map_fragment:
                 fragmentClass = MapViewFragment.class;

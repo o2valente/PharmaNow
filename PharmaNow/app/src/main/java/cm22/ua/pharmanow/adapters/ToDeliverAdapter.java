@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.adapters;
 
 import android.content.Context;
 
@@ -14,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+
+import cm22.ua.pharmanow.datamodel.Product;
+import cm22.ua.pharmanow.R;
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views

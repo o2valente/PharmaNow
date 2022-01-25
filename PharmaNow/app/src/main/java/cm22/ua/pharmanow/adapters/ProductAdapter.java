@@ -1,49 +1,55 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.adapters;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import cm22.ua.pharmanow.datamodel.Product;
+import cm22.ua.pharmanow.R;
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
-@SuppressWarnings("ALL")
-public class ShoppingCartProductAdapter extends
-        RecyclerView.Adapter<ShoppingCartProductAdapter.ViewHolder> {
-
-
-    private final List<Product> mProducts;
-    private final List<Product> productsFull;
-    private final ArrayList<Product> cartProdcuts = new ArrayList<>();
-    DatabaseReference databaseProducts;
-    private String userId;
-    final OnRemoveCartProduct listener;
+@SuppressWarnings("rawtypes")
+public class ProductAdapter extends
+        RecyclerView.Adapter<ProductAdapter.ViewHolder> implements Filterable {
     public static final int HEADER = 1;
     private static final int ITEM = 2;
 
+    private final List<Product> mProducts;
+    private final List<Product> productsFull;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final ArrayList<Product> cartProdcuts = new ArrayList<>();
+    DatabaseReference databaseProducts;
+    private String userId;
+
+
+
     // Pass in the contact array into the constructor
-    public ShoppingCartProductAdapter(List<Product> products, OnRemoveCartProduct listener) {
+    public ProductAdapter(List<Product> products) {
         mProducts = products;
         productsFull = new ArrayList<>(products);
-        this.listener = listener;
-    }
 
+    }
 
     @NonNull
     @Override
@@ -52,64 +58,49 @@ public class ShoppingCartProductAdapter extends
         if (viewType == HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_header, parent, false);
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shoppingcart_product, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
         }
         return new ViewHolder(view);
+
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         if (getItemViewType(position) == HEADER) {
-            holder.headerTextView.setText("Product Name                 Price");
+            holder.headerTextView.setText("Product Name         Pharmacy                 Price");
         } else {
             //get user
-            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
             // Initialize products
             databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
+
             //databaseProducts.child(id).setValue(shoppingCart);
+
             Product product = mProducts.get(position);
 
             if(!product.getProductId().equals("1")){
                 // Set item views based on your views and data model
                 TextView nameTextView = holder.nameTextView;
                 nameTextView.setText(product.getProductName());
+                TextView pharmaTextView = holder.pharmatextView;
+                pharmaTextView.setText(product.getProductPharma());
                 TextView priceTextView = holder.priceTextView;
                 priceTextView.setText(product.getPrice());
                 Button button = holder.messageButton;
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot dsp : snapshot.getChildren()) {
-                                    System.out.println(dsp.getValue().toString());
-                                    if (dsp.child("productName").getValue().toString().equals(product.getProductName()) && dsp.child("productPharma").getValue().toString().equals(product.getProductPharma())) {
-                                        dsp.getRef().removeValue();
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                        System.out.println("AQUI " + holder.getAdapterPosition());
-                        Product p = mProducts.get(holder.getAdapterPosition());
-                        System.out.println("Product= " + p.getPrice());
-                        listener.onRemoveProduct(Double.parseDouble(p.getPrice()));
-                        mProducts.remove(holder.getAdapterPosition());
-                        productsFull.remove(holder.getAdapterPosition());
-                        notifyItemRemoved(holder.getAdapterPosition());
-                        //notifyDataSetChanged();
-
-                    }
+                button.setOnClickListener(v -> {
+                    cartProdcuts.add(product);
+                    String id = databaseProducts.push().getKey();
+                    databaseProducts.child(userId).child("productsList").child(Objects.requireNonNull(id)).setValue(product);
+                    //databaseProducts.child(id).setValue(shoppingCart);
+                    button.setBackgroundColor(Color.GREEN);
                 });
             }
 
 
         }
+
     }
 
     @Override
@@ -121,18 +112,18 @@ public class ShoppingCartProductAdapter extends
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void removeAll(){
-        mProducts.clear();
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
         return mProducts.size();
     }
 
-    //@Override
+// --Commented out by Inspection START (25/01/2022 20:19):
+//    public Product getItem(int position) {
+//        return mProducts.get(position);
+//    }
+// --Commented out by Inspection STOP (25/01/2022 20:19)
+
+    @Override
     public Filter getFilter() {
         return productFilter;
     }
@@ -161,11 +152,10 @@ public class ShoppingCartProductAdapter extends
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mProducts.clear();
+            //noinspection unchecked
             mProducts.addAll((List) results.values);
             if(mProducts.size()!=0)
                 if(!mProducts.get(0).getProductId().equals("1")) mProducts.add(0,new Product("1","dummy","dummy","1"));
-            if(productsFull.size()!=0)
-                if(!productsFull.get(0).getProductId().equals("1")) productsFull.add(0,new Product("1","dummy","dummy","1"));
             notifyDataSetChanged();
         }
     };
@@ -176,20 +166,23 @@ public class ShoppingCartProductAdapter extends
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public final TextView nameTextView;
+        public final TextView pharmatextView;
         public final TextView priceTextView;
         public final Button messageButton;
         public final TextView headerTextView;
+
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
         public ViewHolder(View itemView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-            headerTextView = (TextView) itemView.findViewById(R.id.item_product_header);
-            nameTextView = (TextView) itemView.findViewById(R.id.item_sc_productName);
-            priceTextView = (TextView) itemView.findViewById(R.id.item_sc_productPrice);
-            messageButton = (Button) itemView.findViewById(R.id.sc_remove_button);
 
+            headerTextView = itemView.findViewById(R.id.item_product_header);
+            nameTextView = itemView.findViewById(R.id.item_productName);
+            pharmatextView = itemView.findViewById(R.id.item_productPharma);
+            priceTextView = itemView.findViewById(R.id.item_productPrice);
+            messageButton = itemView.findViewById(R.id.item_buy_button);
 
         }
     }

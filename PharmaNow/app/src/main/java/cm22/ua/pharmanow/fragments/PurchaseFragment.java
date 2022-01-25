@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.fragments;
 
 
 import android.content.pm.ActivityInfo;
@@ -25,6 +25,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import cm22.ua.pharmanow.datamodel.Purchase;
+import cm22.ua.pharmanow.adapters.PurchaseAdapter;
+import cm22.ua.pharmanow.R;
 
 
 public class PurchaseFragment extends Fragment {

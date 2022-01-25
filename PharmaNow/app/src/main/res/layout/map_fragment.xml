@@ -7,7 +7,7 @@
 <!--        android:id="@+id/mapViewFragment"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->
-<!--        android:name="cm22.ua.pharmanow.MapViewFragment"-->
+<!--        android:name="cm22.ua.pharmanow.fragments.MapViewFragment"-->
 <!--        app:navGraph="@navigation/navigation" />-->
 
     <TextView

@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import cm22.ua.pharmanow.R;
 
 public class SignupActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.fragments;
 
 
 import android.app.Notification;
@@ -20,6 +20,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import cm22.ua.pharmanow.datamodel.Product;
+import cm22.ua.pharmanow.R;
 
 
 public class CreateProduct extends Fragment {

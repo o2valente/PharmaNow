@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.fragments;
 
 import android.Manifest;
 import android.content.pm.ActivityInfo;
@@ -27,6 +27,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
+
+import cm22.ua.pharmanow.R;
 
 
 @SuppressWarnings("deprecation")

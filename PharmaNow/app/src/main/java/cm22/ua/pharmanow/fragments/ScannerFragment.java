@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -31,6 +31,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import cm22.ua.pharmanow.datamodel.Product;
+import cm22.ua.pharmanow.datamodel.Purchase;
+import cm22.ua.pharmanow.R;
+import cm22.ua.pharmanow.adapters.ToDeliverAdapter;
 
 public class ScannerFragment extends Fragment {
 
@@ -79,7 +84,7 @@ public class ScannerFragment extends Fragment {
                             productsToDeliver = Objects.requireNonNull(purchase).getProductsBought();
                             if (!purchase.isConfirmed()) {
                                 tv_TextView.setText("Purchase (" + purchase.getId() + ") confirmed for user " + purchase.getUser());
-                                confirmBuy(purchase.id);
+                                confirmBuy(purchase.getId());
                             } else {
                                 tv_TextView.setText("Purchase (" + purchase.getId() + ") already confirmed for user " + purchase.getUser());
                             }

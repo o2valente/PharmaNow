@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.fragments;
 
 
 import android.content.Intent;
@@ -17,8 +17,12 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import cm22.ua.pharmanow.activity.LoginActivity;
+import cm22.ua.pharmanow.R;
+import cm22.ua.pharmanow.activity.SignupActivity;
 
-public class ProfileActivity extends Fragment{
+
+public class ProfileFragment extends Fragment{
 
     private Button changeEmail;
     private Button changePassword;

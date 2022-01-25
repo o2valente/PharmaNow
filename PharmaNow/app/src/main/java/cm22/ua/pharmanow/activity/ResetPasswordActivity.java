@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import cm22.ua.pharmanow.R;
 
 public class ResetPasswordActivity extends AppCompatActivity {
     private EditText inputEmail;

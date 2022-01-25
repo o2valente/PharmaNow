@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -27,6 +27,8 @@ import java.util.List;
 import com.google.zxing.WriterException;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
+import cm22.ua.pharmanow.datamodel.Purchase;
+import cm22.ua.pharmanow.R;
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
@@ -86,7 +88,7 @@ public class PurchaseAdapter extends
             //TODO generate qrcode
             if(popUpView.getParent() != null)
                 ((ViewGroup) popUpView.getParent()).removeView(popUpView);
-            createDialog(purchase.id);
+            createDialog(purchase.getId());
         });
     }
 

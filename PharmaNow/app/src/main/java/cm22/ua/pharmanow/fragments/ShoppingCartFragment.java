@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
@@ -35,7 +35,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduct{
+import cm22.ua.pharmanow.interfaces.OnRemoveCartProduct;
+import cm22.ua.pharmanow.datamodel.Product;
+import cm22.ua.pharmanow.datamodel.Purchase;
+import cm22.ua.pharmanow.R;
+import cm22.ua.pharmanow.adapters.ShoppingCartProductAdapter;
+
+public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduct {
 
     DatabaseReference databaseProducts;
     DatabaseReference databasePurchases;
@@ -102,7 +108,7 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
 
                 if(!products.isEmpty()){
                     for(Product p : products)
-                        if(!p.getProductId().equals("1")) totalCosTemp += Double.parseDouble(p.price);
+                        if(!p.getProductId().equals("1")) totalCosTemp += Double.parseDouble(p.getPrice());
                     totalCost.setText("Total: " + totalCosTemp);
                 }else{
                     totalCost.setText("No items in Shopping Cart");

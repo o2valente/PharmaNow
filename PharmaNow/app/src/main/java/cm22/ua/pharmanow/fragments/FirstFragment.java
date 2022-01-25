@@ -1,7 +1,9 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.fragments;
+
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -24,58 +27,59 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class PharmaProductsFragment extends Fragment {
+import cm22.ua.pharmanow.datamodel.Product;
+import cm22.ua.pharmanow.adapters.ProductAdapter;
+import cm22.ua.pharmanow.R;
 
-    // --Commented out by Inspection (25/01/2022 20:19):private TextView pharmaNameText;
+
+public class FirstFragment extends Fragment {
+
     DatabaseReference databaseProducts;
     ProductAdapter adapter;
+    //private FirebaseAuth auth;
 
-    public PharmaProductsFragment(){}
+
+    public FirstFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.pharma_products,
-                container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        View rootView = inflater.inflate(R.layout.placeholder1,
+                container, false);
+
         setHasOptionsMenu(true);
 
-       // pharmaNameText = rootView.findViewById(R.id.pharmaName);
-
-        Bundle bundle = this.getArguments();
-        String pharma = Objects.requireNonNull(bundle).getString("requestKey");
-
-
-
-        System.out.println(pharma);
-
-        //pharmaNameText.setText(pharma);
         // Lookup the recyclerview in activity layout
         RecyclerView rvProducts = rootView.findViewById(R.id.rvProducts);
 
-        List<Product> products = new ArrayList<>();
-
-        // Initialize contacts
+        // Initialize products
         databaseProducts = FirebaseDatabase.getInstance().getReference();
         databaseProducts.keepSynced(true);
+
+        List<Product> products = new ArrayList<>();
+        //dummy product to be replaced by the header
+        products.add(new Product("1","dummy","dummy","1"));
 
         databaseProducts.child("products").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dsp : snapshot.getChildren()) {
-                    if(Objects.requireNonNull(dsp.child("productPharma").getValue()).toString().equals(pharma)){
-                        products.add(dsp.getValue(Product.class));
-                    }
-
+                    products.add(dsp.getValue(Product.class));
                 }
+
                 // Create adapter passing in the sample user data
                 adapter = new ProductAdapter(products);
                 // Attach the adapter to the recyclerview to populate items
                 rvProducts.setAdapter(adapter);
                 // Set layout manager to position the items
                 rvProducts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
             }
 
             @Override
@@ -95,6 +99,8 @@ public class PharmaProductsFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
 
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -109,5 +115,6 @@ public class PharmaProductsFragment extends Fragment {
         });
         super.onCreateOptionsMenu(menu,inflater);
     }
+
 
 }

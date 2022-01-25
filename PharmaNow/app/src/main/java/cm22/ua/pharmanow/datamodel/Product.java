@@ -1,4 +1,4 @@
-package cm22.ua.pharmanow;
+package cm22.ua.pharmanow.datamodel;
 
 import com.google.firebase.database.PropertyName;
 
