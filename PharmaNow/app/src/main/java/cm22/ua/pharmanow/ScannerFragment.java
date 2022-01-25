@@ -81,14 +81,19 @@ public class ScannerFragment extends Fragment {
                     @Override
                     public void run() {
                         databasePurchase.addListenerForSingleValueEvent(new ValueEventListener() {
-
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 for(DataSnapshot dsp : snapshot.getChildren()){
                                     if(dsp.child("id").getValue().toString().equals(result.getText())){
                                         purchase = dsp.getValue(Purchase.class);
                                         productsToDeliver = purchase.getProductsBought();
-                                        tv_TextView.setText("Purchase (" + purchase.getId() + ") confirmed for user " + purchase.getUser());
+                                        if(!purchase.isConfirmed()){
+                                            tv_TextView.setText("Purchase (" + purchase.getId() + ") confirmed for user " + purchase.getUser());
+                                            confirmBuy(purchase.id);
+                                        }else{
+                                            tv_TextView.setText("Purchase (" + purchase.getId() + ") already confirmed for user " + purchase.getUser());
+                                        }
+
                                     }
                                 }
                             }
@@ -118,6 +123,26 @@ public class ScannerFragment extends Fragment {
         });
 
         return root;
+    }
+
+    private void confirmBuy(String id){
+        DatabaseReference dbPurchase = FirebaseDatabase.getInstance().getReference("Purchases");
+        dbPurchase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dsp : snapshot.getChildren()){
+                    if(dsp.child("id").getValue().toString().equals(id)){
+                        dbPurchase.child(id).child("confirmed").setValue(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     @Override
