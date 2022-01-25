@@ -1,18 +1,14 @@
 package cm22.ua.pharmanow;
 
-import android.content.Context;
-import android.icu.lang.UScript;
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,25 +18,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import java.util.ArrayList;
 import java.util.List;
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
+@SuppressWarnings("ALL")
 public class ShoppingCartProductAdapter extends
         RecyclerView.Adapter<ShoppingCartProductAdapter.ViewHolder> {
 
 
-    private List<Product> mProducts;
-    private List<Product> productsFull;
-    private ArrayList<Product> cartProdcuts = new ArrayList<>();
+    private final List<Product> mProducts;
+    private final List<Product> productsFull;
+    private final ArrayList<Product> cartProdcuts = new ArrayList<>();
     DatabaseReference databaseProducts;
     private String userId;
-    OnRemoveCartProduct listener;
+    final OnRemoveCartProduct listener;
     public static final int HEADER = 1;
     private static final int ITEM = 2;
 
@@ -61,7 +54,7 @@ public class ShoppingCartProductAdapter extends
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shoppingcart_product, parent, false);
         }
-        return new ShoppingCartProductAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -128,6 +121,7 @@ public class ShoppingCartProductAdapter extends
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void removeAll(){
         mProducts.clear();
         notifyDataSetChanged();
@@ -143,7 +137,7 @@ public class ShoppingCartProductAdapter extends
         return productFilter;
     }
 
-    private Filter productFilter =  new Filter() {
+    private final Filter productFilter =  new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Product> filteredList = new ArrayList<>();
@@ -163,6 +157,7 @@ public class ShoppingCartProductAdapter extends
             return results;
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mProducts.clear();
@@ -177,13 +172,13 @@ public class ShoppingCartProductAdapter extends
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView nameTextView;
-        public TextView priceTextView;
-        public Button messageButton;
-        public TextView headerTextView;
+        public final TextView nameTextView;
+        public final TextView priceTextView;
+        public final Button messageButton;
+        public final TextView headerTextView;
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
         public ViewHolder(View itemView) {

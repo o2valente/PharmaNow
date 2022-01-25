@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,9 +14,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ems="10"
-            android:hint="Name"
+            android:hint="@string/name"
             android:inputType="textPersonName"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:importantForAutofill="no" />
 
         <EditText
             android:id="@+id/editTextPrice"
@@ -26,9 +25,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ems="10"
-            android:hint="Price"
+            android:hint="@string/price"
             android:inputType="numberDecimal"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:importantForAutofill="no" />
 
         <Spinner
             android:id="@+id/spinnerPharm"
@@ -48,7 +48,7 @@
             android:layout_marginStart="6dp"
             android:layout_marginBottom="591dp"
             android:minHeight="48dp"
-            android:text="Submit" />
+            android:text="@string/submit" />
 
     </LinearLayout>
 

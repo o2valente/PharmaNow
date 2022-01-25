@@ -1,8 +1,6 @@
 package cm22.ua.pharmanow;
 
-import static androidx.core.content.ContextCompat.createDeviceProtectedStorageContext;
-import static androidx.core.content.ContextCompat.getSystemService;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -12,28 +10,19 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.google.zxing.WriterException;
 import androidmads.library.qrgenearator.QRGContents;
@@ -44,11 +33,8 @@ import androidmads.library.qrgenearator.QRGEncoder;
 public class PurchaseAdapter extends
         RecyclerView.Adapter<PurchaseAdapter.ViewHolder> implements Filterable {
 
-    private List<Purchase> mPurchase;
-    private List<Purchase> purchasesFull;
-    private ArrayList<Product> cartProdcuts = new ArrayList<>();
-    DatabaseReference databasePurchases;
-    private String userId;
+    private final List<Purchase> mPurchase;
+    private final List<Purchase> purchasesFull;
     Bitmap bitmap;
     QRGEncoder qrgEncoder;
     Display display;
@@ -96,14 +82,11 @@ public class PurchaseAdapter extends
         TextView priceTextView = holder.priceTextView;
         priceTextView.setText(String.valueOf(purchase.getTotalCost()));
         Button button = holder.messageButton;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO generate qrcode
-                if(popUpView.getParent() != null)
-                    ((ViewGroup) popUpView.getParent()).removeView(popUpView);
-                createDialog(purchase.id);
-            }
+        button.setOnClickListener(v -> {
+            //TODO generate qrcode
+            if(popUpView.getParent() != null)
+                ((ViewGroup) popUpView.getParent()).removeView(popUpView);
+            createDialog(purchase.id);
         });
     }
 
@@ -124,7 +107,7 @@ public class PurchaseAdapter extends
         int height = point.y;
 
         // generating dimension from width and height.
-        int dimen = width < height ? width : height;
+        int dimen = Math.min(width, height);
         dimen = dimen * 3 / 4;
 
         // setting this dimensions inside our qr code
@@ -147,13 +130,8 @@ public class PurchaseAdapter extends
         dialog.show();
 
 
-        popup_cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
+        popup_cancelBtn.setOnClickListener(v -> dialog.dismiss());
+//
     }
 
     @Override
@@ -161,6 +139,7 @@ public class PurchaseAdapter extends
         return mPurchase.size();
     }
 
+    @SuppressWarnings("unused")
     public Purchase getItem(int position) {
         return mPurchase.get(position);
     }
@@ -170,7 +149,7 @@ public class PurchaseAdapter extends
         return purchaseFilter;
     }
 
-    private Filter purchaseFilter =  new Filter() {
+    private final Filter purchaseFilter =  new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Purchase> filteredList = new ArrayList<>();
@@ -190,23 +169,24 @@ public class PurchaseAdapter extends
             return results;
         }
 
+        @SuppressWarnings("unchecked")
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mPurchase.clear();
-            mPurchase.addAll((List) results.values);
+            mPurchase.addAll((List<Purchase>) results.values);
             notifyDataSetChanged();
         }
     };
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // Your holder should contain a member variable
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // Your holder // --Commented out by Inspection (25/01/2022 20:19):should contain a member variable
         // for any view that will be set as you render a row
-        public TextView dateTextView;
-        public TextView priceTextView;
-        public Button messageButton;
-        public ImageView qrImage;
+        public final TextView dateTextView;
+        public final TextView priceTextView;
+        public final Button messageButton;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -215,10 +195,9 @@ public class PurchaseAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            dateTextView = (TextView) itemView.findViewById(R.id.itemPurchase_Date);
-            priceTextView = (TextView) itemView.findViewById(R.id.itemPurchase_totalCost);
-            messageButton = (Button) itemView.findViewById(R.id.itemPurchase_Qrcode);
-            qrImage = (ImageView) popUpView.findViewById(R.id.idIVQrcode);
+            dateTextView = itemView.findViewById(R.id.itemPurchase_Date);
+            priceTextView = itemView.findViewById(R.id.itemPurchase_totalCost);
+            messageButton = itemView.findViewById(R.id.itemPurchase_Qrcode);
 
         }
     }

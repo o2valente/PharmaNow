@@ -28,7 +28,8 @@
                 android:hint="@string/hint_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:importantForAutofill="no" />
 
             <EditText
                 android:id="@+id/new_email"
@@ -37,7 +38,8 @@
                 android:hint="@string/hint_new_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:importantForAutofill="no" />
 
             <EditText
                 android:id="@+id/password"
@@ -50,7 +52,8 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                tools:ignore="InvalidImeActionId" />
+                tools:ignore="InvalidImeActionId"
+                android:importantForAutofill="no" />
 
             <EditText
                 android:id="@+id/newPassword"
@@ -63,7 +66,8 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                tools:ignore="InvalidImeActionId" />
+                tools:ignore="InvalidImeActionId"
+                android:importantForAutofill="no" />
 
             <Button
                 android:id="@+id/changeEmail"

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -26,7 +27,8 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textSize="10sp"
-        android:drawableLeft="@drawable/ic_baseline_remove_shopping_cart_24" />
+        android:drawableLeft="@drawable/ic_baseline_remove_shopping_cart_24"
+        tools:ignore="RtlHardcoded,SmallSp" />
 
 
 </LinearLayout>

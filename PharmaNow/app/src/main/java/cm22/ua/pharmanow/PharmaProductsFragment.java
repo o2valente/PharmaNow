@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,10 +24,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PharmaProductsFragment extends Fragment {
 
-    private TextView pharmaNameText;
+    // --Commented out by Inspection (25/01/2022 20:19):private TextView pharmaNameText;
     DatabaseReference databaseProducts;
     ProductAdapter adapter;
 
@@ -39,13 +39,13 @@ public class PharmaProductsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.pharma_products,
                 container, false);
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setHasOptionsMenu(true);
 
        // pharmaNameText = rootView.findViewById(R.id.pharmaName);
 
         Bundle bundle = this.getArguments();
-        String pharma = bundle.getString("requestKey");
+        String pharma = Objects.requireNonNull(bundle).getString("requestKey");
 
 
 
@@ -53,7 +53,7 @@ public class PharmaProductsFragment extends Fragment {
 
         //pharmaNameText.setText(pharma);
         // Lookup the recyclerview in activity layout
-        RecyclerView rvProducts = (RecyclerView) rootView.findViewById(R.id.rvProducts);
+        RecyclerView rvProducts = rootView.findViewById(R.id.rvProducts);
 
         List<Product> products = new ArrayList<>();
 
@@ -65,14 +65,9 @@ public class PharmaProductsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dsp : snapshot.getChildren()) {
-                    if(dsp.child("productPharma").getValue().toString().equals(pharma)){
+                    if(Objects.requireNonNull(dsp.child("productPharma").getValue()).toString().equals(pharma)){
                         products.add(dsp.getValue(Product.class));
                     }
-                    //System.out.println(dsp.child("productName").getValue());
-                    /*String id = dsp.child("productId").getValue().toString();
-                    String name = dsp.child("productName").getValue().toString();
-                    String pharma = dsp.child("productPharma").getValue().toString();*/
-                    //products.add(new Product(id, name, pharma));
 
                 }
                 // Create adapter passing in the sample user data
@@ -94,8 +89,8 @@ public class PharmaProductsFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater = getActivity().getMenuInflater();
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater){
+        inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.product_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();

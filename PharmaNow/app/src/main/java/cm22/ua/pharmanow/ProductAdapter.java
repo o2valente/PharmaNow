@@ -1,5 +1,6 @@
 package cm22.ua.pharmanow;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 
 import android.view.LayoutInflater;
@@ -21,17 +22,20 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
+@SuppressWarnings("rawtypes")
 public class ProductAdapter extends
         RecyclerView.Adapter<ProductAdapter.ViewHolder> implements Filterable {
     public static final int HEADER = 1;
     private static final int ITEM = 2;
 
-    private List<Product> mProducts;
-    private List<Product> productsFull;
-    private ArrayList<Product> cartProdcuts = new ArrayList<>();
+    private final List<Product> mProducts;
+    private final List<Product> productsFull;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final ArrayList<Product> cartProdcuts = new ArrayList<>();
     DatabaseReference databaseProducts;
     private String userId;
 
@@ -47,8 +51,6 @@ public class ProductAdapter extends
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //Context context = parent.getContext();
-        //LayoutInflater inflater = LayoutInflater.from(context);
         final View view;
         if (viewType == HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_header, parent, false);
@@ -57,13 +59,9 @@ public class ProductAdapter extends
         }
         return new ViewHolder(view);
 
-        //View productsView = inflater.inflate(R.layout.item_product, parent, false);
-
-        //ViewHolder viewHolder = new ViewHolder(productsView);
-
-        //return viewHolder;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
@@ -71,7 +69,7 @@ public class ProductAdapter extends
             holder.headerTextView.setText("Product Name         Pharmacy                 Price");
         } else {
             //get user
-            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
             // Initialize products
             databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
 
@@ -88,15 +86,12 @@ public class ProductAdapter extends
                 TextView priceTextView = holder.priceTextView;
                 priceTextView.setText(product.getPrice());
                 Button button = holder.messageButton;
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        cartProdcuts.add(product);
-                        String id = databaseProducts.push().getKey();
-                        databaseProducts.child(userId).child("productsList").child(id).setValue(product);
-                        //databaseProducts.child(id).setValue(shoppingCart);
-                        button.setBackgroundColor(Color.GREEN);
-                    }
+                button.setOnClickListener(v -> {
+                    cartProdcuts.add(product);
+                    String id = databaseProducts.push().getKey();
+                    databaseProducts.child(userId).child("productsList").child(Objects.requireNonNull(id)).setValue(product);
+                    //databaseProducts.child(id).setValue(shoppingCart);
+                    button.setBackgroundColor(Color.GREEN);
                 });
             }
 
@@ -119,16 +114,18 @@ public class ProductAdapter extends
         return mProducts.size();
     }
 
-    public Product getItem(int position) {
-        return mProducts.get(position);
-    }
+// --Commented out by Inspection START (25/01/2022 20:19):
+//    public Product getItem(int position) {
+//        return mProducts.get(position);
+//    }
+// --Commented out by Inspection STOP (25/01/2022 20:19)
 
     @Override
     public Filter getFilter() {
         return productFilter;
     }
 
-    private Filter productFilter =  new Filter() {
+    private final Filter productFilter =  new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Product> filteredList = new ArrayList<>();
@@ -148,9 +145,11 @@ public class ProductAdapter extends
             return results;
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mProducts.clear();
+            //noinspection unchecked
             mProducts.addAll((List) results.values);
             if(mProducts.size()!=0)
                 if(!mProducts.get(0).getProductId().equals("1")) mProducts.add(0,new Product("1","dummy","dummy","1"));
@@ -160,14 +159,14 @@ public class ProductAdapter extends
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView nameTextView;
-        public TextView pharmatextView;
-        public TextView priceTextView;
-        public Button messageButton;
-        public TextView headerTextView;
+        public final TextView nameTextView;
+        public final TextView pharmatextView;
+        public final TextView priceTextView;
+        public final Button messageButton;
+        public final TextView headerTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -176,11 +175,11 @@ public class ProductAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            headerTextView = (TextView) itemView.findViewById(R.id.item_product_header);
-            nameTextView = (TextView) itemView.findViewById(R.id.item_productName);
-            pharmatextView = (TextView) itemView.findViewById(R.id.item_productPharma);
-            priceTextView = (TextView) itemView.findViewById(R.id.item_productPrice);
-            messageButton = (Button) itemView.findViewById(R.id.item_buy_button);
+            headerTextView = itemView.findViewById(R.id.item_product_header);
+            nameTextView = itemView.findViewById(R.id.item_productName);
+            pharmatextView = itemView.findViewById(R.id.item_productPharma);
+            priceTextView = itemView.findViewById(R.id.item_productPrice);
+            messageButton = itemView.findViewById(R.id.item_buy_button);
 
         }
     }

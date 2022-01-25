@@ -3,7 +3,6 @@ package cm22.ua.pharmanow;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,21 +12,18 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
 public class ProfileActivity extends Fragment{
 
-    private Button btnChangeEmail, btnChangePassword, btnSendResetEmail, btnRemoveUser,
-            changeEmail, changePassword, sendEmail, remove, signOut;
+    private Button changeEmail;
+    private Button changePassword;
+    private Button sendEmail;
+    private Button remove;
     private EditText oldEmail, newEmail, password, newPassword;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
@@ -37,7 +33,7 @@ public class ProfileActivity extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                 Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         View root = inflater.inflate(R.layout.profile_activity, container, false);
         //  more UI from your activity ....
 
@@ -50,33 +46,30 @@ public class ProfileActivity extends Fragment{
         //get current user
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        authListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    // user auth state is changed - user is null
-                    // launch login activity
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                    //finish();
-                }
+        authListener = firebaseAuth -> {
+            FirebaseUser user1 = firebaseAuth.getCurrentUser();
+            if (user1 == null) {
+                // user auth state is changed - user is null
+                // launch login activity
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+                //finish();
             }
         };
 
-        btnChangeEmail = (Button) root.findViewById(R.id.change_email_button);
-        btnChangePassword = (Button) root.findViewById(R.id.change_password_button);
-        btnSendResetEmail = (Button) root.findViewById(R.id.sending_pass_reset_button);
-        btnRemoveUser = (Button) root.findViewById(R.id.remove_user_button);
-        changeEmail = (Button) root.findViewById(R.id.changeEmail);
-        changePassword = (Button) root.findViewById(R.id.changePass);
-        sendEmail = (Button) root.findViewById(R.id.send);
-        remove = (Button) root.findViewById(R.id.remove);
-        signOut = (Button) root.findViewById(R.id.sign_out);
+        Button btnChangeEmail = root.findViewById(R.id.change_email_button);
+        Button btnChangePassword = root.findViewById(R.id.change_password_button);
+        Button btnSendResetEmail = root.findViewById(R.id.sending_pass_reset_button);
+        Button btnRemoveUser = root.findViewById(R.id.remove_user_button);
+        changeEmail = root.findViewById(R.id.changeEmail);
+        changePassword = root.findViewById(R.id.changePass);
+        sendEmail = root.findViewById(R.id.send);
+        remove = root.findViewById(R.id.remove);
+        Button signOut = root.findViewById(R.id.sign_out);
 
-        oldEmail = (EditText) root.findViewById(R.id.old_email);
-        newEmail = (EditText) root.findViewById(R.id.new_email);
-        password = (EditText) root.findViewById(R.id.password);
-        newPassword = (EditText) root.findViewById(R.id.newPassword);
+        oldEmail = root.findViewById(R.id.old_email);
+        newEmail = root.findViewById(R.id.new_email);
+        password = root.findViewById(R.id.password);
+        newPassword = root.findViewById(R.id.newPassword);
 
         oldEmail.setVisibility(View.GONE);
         newEmail.setVisibility(View.GONE);
@@ -87,166 +80,128 @@ public class ProfileActivity extends Fragment{
         sendEmail.setVisibility(View.GONE);
         remove.setVisibility(View.GONE);
 
-        progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
+        progressBar = root.findViewById(R.id.progressBar);
 
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
 
-        btnChangeEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                oldEmail.setVisibility(View.GONE);
-                newEmail.setVisibility(View.VISIBLE);
-                password.setVisibility(View.GONE);
-                newPassword.setVisibility(View.GONE);
-                changeEmail.setVisibility(View.VISIBLE);
-                changePassword.setVisibility(View.GONE);
-                sendEmail.setVisibility(View.GONE);
-                remove.setVisibility(View.GONE);
+        btnChangeEmail.setOnClickListener(v -> {
+            oldEmail.setVisibility(View.GONE);
+            newEmail.setVisibility(View.VISIBLE);
+            password.setVisibility(View.GONE);
+            newPassword.setVisibility(View.GONE);
+            changeEmail.setVisibility(View.VISIBLE);
+            changePassword.setVisibility(View.GONE);
+            sendEmail.setVisibility(View.GONE);
+            remove.setVisibility(View.GONE);
+        });
+
+        changeEmail.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            if (user != null && !newEmail.getText().toString().trim().equals("")) {
+                user.updateEmail(newEmail.getText().toString().trim())
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Email address is updated. Please sign in with new email id!", Toast.LENGTH_LONG).show();
+                                signOut();
+                                progressBar.setVisibility(View.GONE);
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to update email!", Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+            } else if (newEmail.getText().toString().trim().equals("")) {
+                newEmail.setError("Enter email");
+                progressBar.setVisibility(View.GONE);
             }
         });
 
-        changeEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (user != null && !newEmail.getText().toString().trim().equals("")) {
-                    user.updateEmail(newEmail.getText().toString().trim())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getActivity(), "Email address is updated. Please sign in with new email id!", Toast.LENGTH_LONG).show();
-                                        signOut();
-                                        progressBar.setVisibility(View.GONE);
-                                    } else {
-                                        Toast.makeText(getActivity(), "Failed to update email!", Toast.LENGTH_LONG).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
-                } else if (newEmail.getText().toString().trim().equals("")) {
-                    newEmail.setError("Enter email");
+        btnChangePassword.setOnClickListener(v -> {
+            oldEmail.setVisibility(View.GONE);
+            newEmail.setVisibility(View.GONE);
+            password.setVisibility(View.GONE);
+            newPassword.setVisibility(View.VISIBLE);
+            changeEmail.setVisibility(View.GONE);
+            changePassword.setVisibility(View.VISIBLE);
+            sendEmail.setVisibility(View.GONE);
+            remove.setVisibility(View.GONE);
+        });
+
+        changePassword.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            if (user != null && !newPassword.getText().toString().trim().equals("")) {
+                if (newPassword.getText().toString().trim().length() < 6) {
+                    newPassword.setError("Password too short, enter minimum 6 characters");
                     progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        btnChangePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                oldEmail.setVisibility(View.GONE);
-                newEmail.setVisibility(View.GONE);
-                password.setVisibility(View.GONE);
-                newPassword.setVisibility(View.VISIBLE);
-                changeEmail.setVisibility(View.GONE);
-                changePassword.setVisibility(View.VISIBLE);
-                sendEmail.setVisibility(View.GONE);
-                remove.setVisibility(View.GONE);
-            }
-        });
-
-        changePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (user != null && !newPassword.getText().toString().trim().equals("")) {
-                    if (newPassword.getText().toString().trim().length() < 6) {
-                        newPassword.setError("Password too short, enter minimum 6 characters");
-                        progressBar.setVisibility(View.GONE);
-                    } else {
-                        user.updatePassword(newPassword.getText().toString().trim())
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(getActivity(), "Password is updated, sign in with new password!", Toast.LENGTH_SHORT).show();
-                                            signOut();
-                                            progressBar.setVisibility(View.GONE);
-                                        } else {
-                                            Toast.makeText(getActivity(), "Failed to update password!", Toast.LENGTH_SHORT).show();
-                                            progressBar.setVisibility(View.GONE);
-                                        }
-                                    }
-                                });
-                    }
-                } else if (newPassword.getText().toString().trim().equals("")) {
-                    newPassword.setError("Enter password");
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        btnSendResetEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                oldEmail.setVisibility(View.VISIBLE);
-                newEmail.setVisibility(View.GONE);
-                password.setVisibility(View.GONE);
-                newPassword.setVisibility(View.GONE);
-                changeEmail.setVisibility(View.GONE);
-                changePassword.setVisibility(View.GONE);
-                sendEmail.setVisibility(View.VISIBLE);
-                remove.setVisibility(View.GONE);
-            }
-        });
-
-        sendEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (!oldEmail.getText().toString().trim().equals("")) {
-                    auth.sendPasswordResetEmail(oldEmail.getText().toString().trim())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getActivity(), "Reset password email is sent!", Toast.LENGTH_SHORT).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    } else {
-                                        Toast.makeText(getActivity(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
                 } else {
-                    oldEmail.setError("Enter email");
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        btnRemoveUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (user != null) {
-                    user.delete()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText( getActivity(), "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getActivity(), SignupActivity.class));
-                                        //finish();
-                                        progressBar.setVisibility(View.GONE);
-                                    } else {
-                                        Toast.makeText(getActivity(), "Failed to delete your account!", Toast.LENGTH_SHORT).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
+                    user.updatePassword(newPassword.getText().toString().trim())
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getActivity(), "Password is updated, sign in with new password!", Toast.LENGTH_SHORT).show();
+                                    signOut();
+                                    progressBar.setVisibility(View.GONE);
+                                } else {
+                                    Toast.makeText(getActivity(), "Failed to update password!", Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.GONE);
                                 }
                             });
                 }
+            } else if (newPassword.getText().toString().trim().equals("")) {
+                newPassword.setError("Enter password");
+                progressBar.setVisibility(View.GONE);
             }
         });
 
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut();
+        btnSendResetEmail.setOnClickListener(v -> {
+            oldEmail.setVisibility(View.VISIBLE);
+            newEmail.setVisibility(View.GONE);
+            password.setVisibility(View.GONE);
+            newPassword.setVisibility(View.GONE);
+            changeEmail.setVisibility(View.GONE);
+            changePassword.setVisibility(View.GONE);
+            sendEmail.setVisibility(View.VISIBLE);
+            remove.setVisibility(View.GONE);
+        });
+
+        sendEmail.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            if (!oldEmail.getText().toString().trim().equals("")) {
+                auth.sendPasswordResetEmail(oldEmail.getText().toString().trim())
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Reset password email is sent!", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+            } else {
+                oldEmail.setError("Enter email");
+                progressBar.setVisibility(View.GONE);
             }
         });
+
+        btnRemoveUser.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            if (user != null) {
+                user.delete()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getActivity(), SignupActivity.class));
+                                //finish();
+                                progressBar.setVisibility(View.GONE);
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to delete your account!", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+            }
+        });
+
+        signOut.setOnClickListener(v -> signOut());
         return root;
     }
 

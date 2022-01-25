@@ -21,7 +21,7 @@ public class ToDeliverAdapter extends
         RecyclerView.Adapter<ToDeliverAdapter.ViewHolder> {
 
 
-    private List<Product> mProducts;
+    private final List<Product> mProducts;
 
 
     // Pass in the contact array into the constructor
@@ -37,9 +37,7 @@ public class ToDeliverAdapter extends
 
         View productsView = inflater.inflate(R.layout.item_to_deliver, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(productsView);
-
-        return viewHolder;
+        return new ViewHolder(productsView);
     }
 
     @Override
@@ -60,18 +58,14 @@ public class ToDeliverAdapter extends
         return mProducts.size();
     }
 
-    public Product getItem(int position) {
-        return mProducts.get(position);
-    }
-
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView nameTextView;
-        public TextView pharmatextView;
+        public final TextView nameTextView;
+        public final TextView pharmatextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -80,8 +74,8 @@ public class ToDeliverAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            nameTextView = (TextView) itemView.findViewById(R.id.item_toDeliver_productName);
-            pharmatextView = (TextView) itemView.findViewById(R.id.item_toDeliver_productPharma);
+            nameTextView = itemView.findViewById(R.id.item_toDeliver_productName);
+            pharmatextView = itemView.findViewById(R.id.item_toDeliver_productPharma);
 
         }
     }

@@ -2,7 +2,8 @@ package cm22.ua.pharmanow;
 
 import com.google.firebase.database.PropertyName;
 
-public class Product{
+@SuppressWarnings("ALL")
+public class Product {
 
 
     String productId;
@@ -13,7 +14,8 @@ public class Product{
 
     String price;
 
-    public Product(){}
+    public Product() {
+    }
 
     public Product(String productId, String productName, String productPharma, String price) {
         this.productId = productId;
@@ -27,7 +29,7 @@ public class Product{
         this.productId = productId;
     }
 
-    @PropertyName("productName")
+   @PropertyName("productName")
     public void setProductName(String productName) {
         this.productName = productName;
     }

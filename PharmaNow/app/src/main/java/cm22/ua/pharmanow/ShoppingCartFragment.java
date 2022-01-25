@@ -1,6 +1,6 @@
 package cm22.ua.pharmanow;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,10 +30,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduct{
 
@@ -52,19 +52,20 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
         // Required empty public constructor
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.shopping_cart,
                 container, false);
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setHasOptionsMenu(true);
 
         // Lookup the recyclerview in activity layout
-        RecyclerView rvProducts = (RecyclerView) rootView.findViewById(R.id.rvShoppingCartProducts);
+        RecyclerView rvProducts = rootView.findViewById(R.id.rvShoppingCartProducts);
 
         //get user
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         // Initialize products
         databaseProducts = FirebaseDatabase.getInstance().getReference("ShoppingCart");
         databaseProducts.keepSynced(true);
@@ -82,41 +83,34 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
         products.add(new Product("1","dummy","dummy","1"));
 
         databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dsp : snapshot.getChildren()) {
-                    //System.out.println(dsp.child("productName").getValue());
-                    /*String id = dsp.child("productId").getValue().toString();
-                    String name = dsp.child("productName").getValue().toString();
-                    String pharma = dsp.child("productPharma").getValue().toString();*/
-                    //products.add(new Product(id, name, pharma));
                     products.add(dsp.getValue(Product.class));
                 }
 
 
-                btnRemove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        System.out.println("Estou aqui");
-                        Fragment newFragment = new ShoppingCartFragment();
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.replace(R.id.flContent, newFragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-                    }
+                btnRemove.setOnClickListener(v -> {
+                    System.out.println("Estou aqui");
+                    Fragment newFragment = new ShoppingCartFragment();
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.flContent, newFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
                 });
 
                 if(!products.isEmpty()){
                     for(Product p : products)
                         if(!p.getProductId().equals("1")) totalCosTemp += Double.parseDouble(p.price);
-                    totalCost.setText("Total: " + String.valueOf(totalCosTemp));
+                    totalCost.setText("Total: " + totalCosTemp);
                 }else{
                     totalCost.setText("No items in Shopping Cart");
                 }
 
 
                 // Create adapter passing in the sample user data
-                adapter = new ShoppingCartProductAdapter(products, ShoppingCartFragment.this::onRemoveProduct);
+                adapter = new ShoppingCartProductAdapter(products, ShoppingCartFragment.this);
                 // Attach the adapter to the recyclerview to populate items
                 rvProducts.setAdapter(adapter);
                 // Set layout manager to position the items
@@ -134,51 +128,40 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
 
 
 
-        btnBuyAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("");
-                builder.setMessage("Do you want to buy All Items ?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
+        btnBuyAll.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("");
+            builder.setMessage("Do you want to buy All Items ?");
+            builder.setPositiveButton("Yes", (dialog, id) -> {
+                databaseProducts.child(userId).child("productsList").addListenerForSingleValueEvent(new ValueEventListener() {
 
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for(DataSnapshot dsp : snapshot.getChildren()){
-                                    //System.out.println(dsp.getValue().toString());
-                                    //purchaseId = purchaseId + dsp.child("productName").getValue().toString();
-                                    dsp.getRef().removeValue();
-                                }
-                            }
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dsp : snapshot.getChildren()) {
+                            dsp.getRef().removeValue();
+                        }
+                    }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                        String prodId = databaseProducts.push().getKey();
-                        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                        //purchaseId = id+purchaseId;
-                        Purchase purchase = new Purchase(prodId, email, products, currentDate,totalCosTemp, false);
-                        databasePurchases.child(prodId).setValue(purchase);
-
-                        adapter.removeAll();
-                        totalCost.setText("No items in Shopping Cart");
-
-                        Toast.makeText(getActivity(),"Purchage successful", Toast.LENGTH_SHORT).show();    // stop chronometer here
                     }
                 });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
+                String prodId = databaseProducts.push().getKey();
+                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                //purchaseId = id+purchaseId;
+                Purchase purchase = new Purchase(prodId, email, products, currentDate, totalCosTemp, false);
+                databasePurchases.child(Objects.requireNonNull(prodId)).setValue(purchase);
+
+                adapter.removeAll();
+                totalCost.setText("No items in Shopping Cart");
+
+                Toast.makeText(getActivity(), "Purchage successful", Toast.LENGTH_SHORT).show();    // stop chronometer here
+            });
+            builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
+            AlertDialog alert = builder.create();
+            alert.show();
         });
 
 
@@ -187,8 +170,8 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater = getActivity().getMenuInflater();
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater){
+        inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.product_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
@@ -208,13 +191,14 @@ public class ShoppingCartFragment extends Fragment implements OnRemoveCartProduc
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onRemoveProduct(double price) {
         System.out.println("Total = "+totalCosTemp+", "+price);
         totalCosTemp -= price;
-        System.out.println(String.format("Total = %.2f" , totalCosTemp));
+        System.out.printf("Total = %.2f%n", totalCosTemp);
         if(totalCosTemp <= 0)
-            totalCost.setText("No items in Shopping Cart");
+            totalCost.setText(R.string.not_itens);
         else
             totalCost.setText(String.format("Total: %.2f" , totalCosTemp));
     }

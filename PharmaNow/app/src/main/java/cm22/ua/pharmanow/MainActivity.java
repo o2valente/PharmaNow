@@ -1,7 +1,5 @@
 package cm22.ua.pharmanow;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,22 +9,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,21 +27,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
-    private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
-    private ArrayList<Product> cartProdcuts = new ArrayList<>();
+    private final ArrayList<Product> cartProdcuts = new ArrayList<>();
     DatabaseReference databaseProducts;
     DatabaseReference databaseAdmins;
-    FirebaseUser authUser = FirebaseAuth.getInstance().getCurrentUser();
-    Menu mainMenu;
+    final FirebaseUser authUser = FirebaseAuth.getInstance().getCurrentUser();
+    // --Commented out by Inspection (25/01/2022 20:19):Menu mainMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         }
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -87,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
         // Setup toggle to display hamburger icon with nice animation
         //drawerToogle.setDrawerIndicatorEnabled(true);
@@ -96,17 +88,14 @@ public class MainActivity extends AppCompatActivity {
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle);
 
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        NavigationView nvDrawer = findViewById(R.id.nvView);
+        View headerLayout = nvDrawer.inflateHeaderView(R.layout.nav_header);
         Menu nav_Menu = nvDrawer.getMenu();
         databaseAdmins = FirebaseDatabase.getInstance().getReference();
         databaseAdmins.child("admin").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(authUser.getEmail().equals(snapshot.getValue().toString())){
-                    nav_Menu.findItem(R.id.admin_group).setVisible(true);
-                }else{
-                    nav_Menu.findItem(R.id.admin_group).setVisible(false);
-                }
+                nav_Menu.findItem(R.id.admin_group).setVisible(Objects.requireNonNull(authUser.getEmail()).equals(Objects.requireNonNull(snapshot.getValue()).toString()));
 
             }
 
@@ -121,23 +110,18 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(nvDrawer);
 
 
-        // Lookup navigation view
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nvView);
         // Inflate the header view at runtime
-        View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header);
         // We can now look up items within the header if needed
         //ImageView ivHeaderPhoto = headerLayout.findViewById(R.id.imageView);
 
         Fragment fragment = null;
         try {
-            fragment = (Fragment) FirstFragment.class.newInstance();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+            fragment = FirstFragment.class.newInstance();
+        } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flContent, Objects.requireNonNull(fragment)).commit();
 
 
 
@@ -148,13 +132,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    if (data.child(userId).exists()) {
-                        //do ur stuff
-                    } else {
-                        //do something if not exists
+                    if (!data.child(userId).exists()) {
                         ShoppingCart shoppingCart = new ShoppingCart(cartProdcuts, userEmail);
                         databaseProducts.child(userId).setValue(shoppingCart);
-                    }
+                    }  //do something if not exists
+
                 }
 
             }
@@ -185,12 +167,9 @@ public class MainActivity extends AppCompatActivity {
     private void setupDrawerContent(NavigationView navigationView) {
 
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
 
 
@@ -209,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         // Pass any configuration change to the drawer toggles
@@ -222,10 +201,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            mDrawer.openDrawer(GravityCompat.START);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -235,14 +213,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    @SuppressWarnings("rawtypes")
+    @SuppressLint("NonConstantResourceId")
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
         Class fragmentClass;
         switch(menuItem.getItemId()) {
-            case R.id.nav_first_fragment:
-                fragmentClass = FirstFragment.class;
-                break;
             case R.id.nav_second_fragment:
                 fragmentClass = CreateProduct.class;
                 break;
@@ -273,8 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-
+        fragmentManager.beginTransaction().replace(R.id.flContent, Objects.requireNonNull(fragment)).commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);

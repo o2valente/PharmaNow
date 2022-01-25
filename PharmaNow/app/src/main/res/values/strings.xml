@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">PharmaNow</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -12,15 +12,11 @@
     <string name="send_password_reset_email">Send Password reset email</string>
     <string name="remove_user">Remove user</string>
     <string name="new_pass">New Password</string>
-    <string name="title_activity_profile">Firebase</string>
-    <string name="title_activity_login">Sign in</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="hint_name">Fullname</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Not a member? Get registered in Firebase now!</string>
     <string name="btn_link_to_login">Already registered. Login Me!</string>
-    <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="btn_forgot_password">Forgot your password?</string>
     <string name="btn_reset_password">Reset Password</string>
     <string name="btn_back"><![CDATA[<< Back]]></string>
@@ -40,12 +36,27 @@
         <item>Farmácia Neto</item>
     </array>
     
-    <string name="maps_api_key">AIzaSyA0D40Hg49PUk4epOYC4vuyStomxXh1C9Y</string>
+    <string name="maps_api_key" tools:ignore="Typos">AIzaSyA0D40Hg49PUk4epOYC4vuyStomxXh1C9Y</string>
 
-    <string name="action_search">Search</string>
     <string name="qr_code">qr_code</string>
-    <string name="enter_your_info">Enter your info</string>
-    <string name="generate_qr_code">Generate QR Code</string>
+    <string name="todo">TODO</string>
+    <string name="name">Name</string>
+    <string name="price">Price</string>
+    <string name="submit">Submit</string>
+    <string name="products_available">Products Available</string>
+    <string name="map">Map</string>
+    <string name="my_shopping_cart">My Shopping Cart</string>
+    <string name="my_purchases">My Purchases</string>
+    <string name="profile">Profile</string>
+    <string name="admin">Admin</string>
+    <string name="add_products_to_sell">Add Products to Sell</string>
+    <string name="scanner">Scanner</string>
+    <string name="request_location_permission_at_run_time">Request Location permission at Run time!</string>
+    <string name="search">Search</string>
+    <string name="cancel">Cancel</string>
+    <string name="scan_something">Scan something…</string>
+    <string name="buy_all">Buy All</string>
+    <string name="not_itens" />
 
 </resources>
 

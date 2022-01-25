@@ -2,9 +2,9 @@ package cm22.ua.pharmanow;
 
 import com.google.firebase.database.PropertyName;
 
-import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Purchase {
     String id;
     String user;
@@ -34,6 +34,7 @@ public class Purchase {
         this.id = id;
     }
 
+
     @PropertyName("user")
     public String getUser() {
         return user;
@@ -59,7 +60,7 @@ public class Purchase {
         return date;
     }
 
-    @PropertyName("date")
+  @PropertyName("date")
     public void setDate(String date) {
         this.date = date;
     }
