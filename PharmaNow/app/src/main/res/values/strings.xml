@@ -36,7 +36,7 @@
         <item>Farmácia Neto</item>
     </array>
     
-    <string name="maps_api_key" tools:ignore="Typos">AIzaSyA0D40Hg49PUk4epOYC4vuyStomxXh1C9Y</string>
+    <string name="maps_api_key" tools:ignore="Typos">ola</string>
 
     <string name="qr_code">qr_code</string>
     <string name="todo">TODO</string>
